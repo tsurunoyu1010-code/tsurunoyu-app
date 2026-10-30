@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>鶴の湯 業務記録</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="鶴の湯 記録">
+<meta name="theme-color" content="#1e4d72">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: sticky header + alarm band, then a single working column (max 1180px) — iPad landscape for front, phone/PC for managers. Bath-tile cool neutrals, indigo noren accent. */
+:root{
+  --bg:#edf1f3; --surface:#ffffff; --surface-2:#f6f8f9; --ink:#15212b; --muted:#5a6a77; --line:#d3dbe0;
+  --accent:#1e4d72; --accent-ink:#ffffff; --accent-soft:#dce7ef;
+  --ok:#2c7a52; --ok-soft:#dbeee2; --warn:#a96300; --warn-soft:#fbebd0; --bad:#c13a20; --bad-soft:#f8ded7;
+  --f-display:"Dela Gothic One","Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP","Yu Gothic",system-ui,sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f161c; --surface:#17212a; --surface-2:#1c2832; --ink:#e5edf2; --muted:#93a4b1; --line:#2b3945;
+  --accent:#86b6dc; --accent-ink:#0b1720; --accent-soft:#1e3345;
+  --ok:#6cc896; --ok-soft:#173326; --warn:#e8ab4f; --warn-soft:#3a2a10; --bad:#ff7d65; --bad-soft:#3f1d16; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161c; --surface:#17212a; --surface-2:#1c2832; --ink:#e5edf2; --muted:#93a4b1; --line:#2b3945;
+  --accent:#86b6dc; --accent-ink:#0b1720; --accent-soft:#1e3345;
+  --ok:#6cc896; --ok-soft:#173326; --warn:#e8ab4f; --warn-soft:#3a2a10; --bad:#ff7d65; --bad-soft:#3f1d16; color-scheme:dark}
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+img{max-width:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--accent);color:var(--accent-ink)}
+header.top .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:10px}
+.brand{font-family:var(--f-display);font-size:20px;letter-spacing:.06em;white-space:nowrap}
+.brand small{font-family:var(--f-body);font-weight:500;font-size:12px;opacity:.8;margin-left:8px;letter-spacing:.1em}
+.hdr-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto}
+.clock{font-size:14px;opacity:.92}
+.hbtn{border:1px solid color-mix(in srgb,var(--accent-ink) 40%,transparent);background:transparent;color:var(--accent-ink);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:500;white-space:nowrap}
+.hbtn.on{background:var(--accent-ink);color:var(--accent)}
+.hbtn.staff{font-weight:700}
+
+/* alarm band */
+.alarms{background:var(--bad-soft);border-bottom:2px solid var(--bad)}
+.alarms .wrap{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-block:10px}
+.alarms .lbl{font-weight:700;color:var(--bad);margin-right:4px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 12px;font-size:14px;font-weight:500;border:1px solid var(--bad);color:var(--bad);background:var(--surface)}
+.chip.l2{background:var(--bad);color:var(--surface);border-color:var(--bad)}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.chip.l2 .dot{animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.chip.l2 .dot{animation:none}}
+
+/* tabs */
+nav.tabs{display:flex;gap:4px;overflow-x:auto;padding-block:14px 0;scrollbar-width:none}
+nav.tabs button{border:0;background:transparent;padding:10px 16px;border-radius:var(--r) var(--r) 0 0;font-weight:700;color:var(--muted);white-space:nowrap;font-size:16px;position:relative}
+nav.tabs button.on{background:var(--surface);color:var(--accent)}
+nav.tabs .badge{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:var(--bad);color:var(--surface);font-size:12px;line-height:20px;text-align:center}
+main{padding-block:0 48px}
+.panel{background:var(--surface);border-radius:0 var(--r) var(--r) var(--r);padding:20px;display:flex;flex-direction:column;gap:20px}
+.panel.plain{border-radius:var(--r)}
+
+h2{font-size:18px;margin:0;text-wrap:balance}
+h3{font-size:15px;margin:0;text-wrap:balance}
+.sub{color:var(--muted);font-size:13px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spacer{flex:1}
+
+/* segmented */
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;padding:8px 18px;border-radius:999px;font-weight:700;color:var(--muted);font-size:15px}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+
+/* buttons, inputs */
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 16px;font-weight:700}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.small{padding:6px 12px;font-size:13px}
+.btn.ghost{background:transparent}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+input.f,select.f,textarea.f{border:1px solid var(--line);background:var(--surface-2);border-radius:8px;padding:10px 12px;width:100%;min-width:0}
+input.f:focus,textarea.f:focus{border-color:var(--accent);outline:none;background:var(--surface)}
+input.f.low{border-color:var(--bad);background:var(--bad-soft);color:var(--bad);font-weight:700}
+label.fld{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);min-width:0}
+label.fld > span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* checklist */
+.sec{display:flex;flex-direction:column;gap:10px}
+.sec-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:6px}
+.sec-h .due{margin-left:auto;font-size:13px;color:var(--muted)}
+.sec-h .due.late{color:var(--bad);font-weight:700}
+.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
+.item{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:12px 14px;min-height:60px}
+.item .box{flex:none;width:28px;height:28px;border-radius:6px;border:2px solid var(--muted);display:grid;place-items:center}
+.item .t{flex:1;min-width:0;font-weight:500}
+.item .who{font-size:12px;color:var(--muted);white-space:nowrap}
+.item.done{background:var(--ok-soft);border-color:transparent}
+.item.done .box{background:var(--ok);border-color:var(--ok)}
+.item.done .box::after{content:"";width:8px;height:14px;border:solid var(--surface);border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-2px)}
+.item.done .who{color:var(--ok);font-weight:700}
+.item.confirm{background:var(--warn-soft);border-color:var(--warn)}
+.item.confirm .who{color:var(--warn);font-weight:700}
+.item.late{border-color:var(--bad);border-width:2px}
+.progress{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden;min-width:120px;flex:1;max-width:240px}
+.progress > i{display:block;height:100%;background:var(--ok)}
+
+/* bath */
+.slots{display:flex;flex-direction:column;gap:10px}
+.slot{border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+.slot.open{border-color:var(--accent);border-width:2px}
+.slot.late{border-color:var(--bad);border-width:2px}
+.slot-h{display:flex;align-items:center;gap:12px;padding:12px 16px;flex-wrap:wrap}
+.slot-h .hr{font-family:var(--f-display);font-size:24px;min-width:64px}
+.slot-h .sum{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;flex:1;min-width:0}
+.slot-h .sum b{font-weight:700}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.mute{background:var(--surface-2);color:var(--muted)}
+.pill.acc{background:var(--accent-soft);color:var(--accent)}
+.slot-b{padding:0 16px 16px;display:flex;flex-direction:column;gap:14px}
+.tubs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tub{background:var(--surface-2);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.tub h4{margin:0;font-size:14px}
+.tub .pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.inject{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;background:var(--accent-soft);border-radius:8px;padding:12px}
+.inject .fld{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
+.inject .hint{font-size:13px;color:var(--accent);flex-basis:100%}
+.check{display:flex;align-items:center;gap:8px;font-size:14px;padding:8px 0}
+.check input{width:22px;height:22px}
+.warnline{color:var(--bad);font-weight:700;font-size:14px}
+
+/* tap input */
+.stp{display:flex;align-items:stretch;gap:6px}
+.stp button{flex:none;width:52px;min-height:52px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:24px;font-weight:700;color:var(--accent);touch-action:manipulation}
+.stp button.wide{width:auto;padding:0 10px;font-size:15px}
+.stp button:active{background:var(--accent-soft)}
+.stp input.f{text-align:center;font-size:22px;font-weight:700;padding:6px 4px;min-width:64px;flex:1}
+.lbl{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13px;color:var(--muted)}
+.clchips{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.clchips button{min-height:44px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-weight:700;font-size:16px;font-variant-numeric:tabular-nums;color:var(--ink);touch-action:manipulation;padding:0}
+.clchips button.lowv{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 35%,var(--line))}
+.clchips button.plus{grid-column:1/-1}
+.clchips button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.clchips button.on.lowv{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.clsel{font-size:13px;color:var(--muted)}
+.clsel b{font-size:18px;color:var(--ink)}
+.clsel b.low{color:var(--bad)}
+.numchips{display:flex;gap:6px;flex-wrap:wrap}
+.numchips button{min-width:52px;min-height:48px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-weight:700;font-size:18px;touch-action:manipulation}
+.numchips button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+.powder{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:8px;padding:12px}
+.powder.need{border-color:var(--bad);background:var(--bad-soft)}
+.pw-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pw-n{min-width:9em;font-weight:700;display:flex;flex-direction:column}
+.pw-n small{font-weight:500;color:var(--muted);font-size:12px}
+.pw-row .numchips button{min-width:88px}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+thead th{background:var(--surface-2);font-size:12px;color:var(--muted);font-weight:700;position:sticky;top:0}
+tbody tr:last-child td{border-bottom:0}
+td.c,th.c{text-align:center}
+td.low{background:var(--bad-soft);color:var(--bad);font-weight:700}
+td.done{color:var(--ok)}
+td.miss{color:var(--bad);font-weight:700}
+td.dim{color:var(--muted)}
+td.item-name{white-space:normal;min-width:180px}
+
+/* manager */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.tile{background:var(--surface);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:4px}
+.tile .k{font-size:13px;color:var(--muted);font-weight:500}
+.tile .v{font-size:28px;font-weight:700;line-height:1.2}
+.tile .v small{font-size:14px;font-weight:500;color:var(--muted);margin-left:4px}
+.tile.bad .v{color:var(--bad)}
+.tile.ok .v{color:var(--ok)}
+.alist{display:flex;flex-direction:column;gap:8px}
+.al{display:flex;gap:12px;align-items:center;border-radius:var(--r);padding:12px 14px;background:var(--surface);border-left:6px solid var(--warn);flex-wrap:wrap}
+.al.l2,.al.cl{border-left-color:var(--bad)}
+.al.acked{opacity:.7;border-left-color:var(--line)}
+.al .body{flex:1;min-width:200px}
+.al .ttl{font-weight:700}
+.al .meta{font-size:13px;color:var(--muted)}
+.mgr{display:flex;flex-direction:column;gap:20px;padding-block:16px 0}
+.card{background:var(--surface);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.datebar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.datebar input{width:auto}
+
+.empty{color:var(--muted);padding:20px;text-align:center;border:1px dashed var(--line);border-radius:var(--r)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:700;z-index:20;max-width:calc(100% - 32px)}
+.overlay{position:fixed;inset:0;background:color-mix(in srgb,var(--ink) 45%,transparent);z-index:15;display:grid;place-items:center;padding:16px}
+.sheet{background:var(--surface);border-radius:14px;padding:20px;width:min(520px,100%);display:flex;flex-direction:column;gap:14px;max-height:90vh;overflow:auto}
+.names{display:flex;gap:8px;flex-wrap:wrap}
+.names button{border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:10px 18px;font-weight:700;font-size:16px}
+.names button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+/* start */
+.start{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;padding-block:28px}
+.start button{border:0;background:var(--surface);border-radius:14px;padding:28px 24px;text-align:left;display:flex;flex-direction:column;gap:8px}
+.start button b{font-family:var(--f-display);font-size:22px;color:var(--accent);font-weight:400}
+.start button span{color:var(--muted)}
+.denoms{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.denoms label.fld span{text-align:center}
+.denoms input.f{text-align:center;padding:8px 4px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+
+@media (max-width:760px){
+  .tubs{grid-template-columns:1fr}
+  .panel{padding:14px;border-radius:var(--r)}
+  .brand{font-size:17px}
+  .items{grid-template-columns:1fr}
+  .denoms{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top"><div class="wrap"><div class="brand">鶴の湯<small>業務記録</small></div></div></header>
+  <div class="wrap"><div class="empty" style="margin-top:24px">読み込み中…</div></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const API_URL = "https://script.google.com/macros/s/AKfycbws0RsBbITD2Q6XXUiWxgpfoCdMVl8W0wxr4VgR3grVOHaBWOEpiTAmH5mwmDTD2Pe7/exec";
+const INIT_MODE = new URLSearchParams(location.search).get("mode")||"";
+
+/* ===== チェック表の定義（Google ドライブの各チェック表から） ===== */
+const SH4 = ["朝","昼","夕","夜"];
+const LISTS = {
+  op: { name:"OP・CL", doc:"ops", shifts:["朝","昼","夜"], source:"OPCLチェック_両替記録表（2026.10.3改正）", sections:[
+    { id:"op", name:"OP（開店）", shifts:["朝","昼"], note:"昼スタッフも掃除後に確認", items:[
+      "バレルサウナ稼働確認","窯場ゴミ出し（iPadにカレンダー有）","機械室スイッチON","カラン循環スイッチON（15分間）",
+      "浴槽蓋・サウナのドア","女ミストサウナスイッチ","照明／扇風機／冷暖房3つスイッチ","ロウリュ／足拭き／サウナマット",
+      "男女交換確認","ミストサウナ稼働確認","塩素計測／投入","カラン循環スイッチOFF（15分後）",
+      "ロビー・脱衣場の椅子元に戻す","脱衣／浴場のゴミ箱","お湯ポット沸かし","鍋設置&水満タン"]},
+    { id:"lunch", name:"昼休憩", shifts:["昼"], items:["レジ締め"]},
+    { id:"cl", name:"CL（閉店）", shifts:["夜"], items:[
+      "シャンプー／ボディソープ交換","掃除機／タブレット充電","サーバー受け皿洗浄","タップキャップ青洗浄","シャッター閉める",
+      "バレルサウナ電源切る","機械室スイッチ","蓋閉め、水蛇口締め、ミスト扉開放","サウナマット回収","バレル・デッキ・バケツ洗浄",
+      "椅子とコンセントを上げる","女サウナスイッチ","照明／扇風機／冷暖房3つスイッチ","忘れ物回収・明日の棚空に",
+      "鍋を取り出して冷却（水風呂前に置く）","男女交換作業","バレル扉解放","パイプユニッシュ排水溝に","高濃度塩素洗浄",
+      "火曜分のゴミ捨て","塩素投入","浴場消灯","バーナー電源切る","バレルサウナ電源入れる"]}
+  ]},
+  duty: { name:"業務チェック", doc:"duty", shifts:SH4, source:"業務チェック&不足品報告表", sections:[
+    { id:"start", name:"出勤時", shifts:SH4, items:["連絡・infoノートチェック"]},
+    { id:"outside", name:"外回りの掃き掃除（交代時）", shifts:SH4, dueKey:"out", items:["外回りの掃き掃除"],
+      shiftNotes:{"朝":"オープン（6:00）前に","昼":"浴場清掃・ロビー清掃が終わってから、オープン（12:00）前に","夕":"出勤したら引き継ぎのタイミングで","夜":"出勤したら引き継ぎのタイミングで"}},
+    { id:"round", name:"引継前（巡回・随時）", shifts:SH4, items:[
+      "見回り①／コロコロ剥がす","見回り②／コロコロ剥がす","見回り③／コロコロ剥がす","塩素計測","サウナ／足拭きマット交換",
+      "サウナアロマ&鍋水補充","雑巾で扇風機拭く","ロビーテーブルアルコール拭き","ゴミをゴミ庫に","リストバンド不足確認＆補充",
+      "ドリンク不足確認＆表記入","氷を作る","ドリンク、アメニティ補充","空瓶整理","洗濯","フロントのブロワー",
+      "玄関付近のはき掃除","ビールサワーサーバー水通し洗浄","水光熱費チェックシート記入","ランドリーゴミ捨て",
+      "洗濯・乾燥機拭き掃除","玄関掃き掃除","ランドリー掃き掃除"]},
+    { id:"handover", name:"引継※（重め・交代時）", shifts:SH4, note:"シフト最後の30分（次の人とかぶってる時間）で実施", items:[
+      "トイレ掃除","エアレジ点検","乾燥機フィルター掃除"]}
+  ]}
+};
+/* 浴槽点検記録票（残留塩素濃度記録票_0921）＋ 塩素管理の徹底_20260921 */
+const BATH_SLOTS = [6,8,10,12,14,16,18,19,20,22,24,25];
+const MEASURE = s => s!==19 && s!==25;          // 19時・25時は計測不要・投入量のみ
+const INJECT  = s => [6,12,19,25].includes(s);  // 固形塩素の投入時刻
+const TUBS = [{id:"main",name:"主浴槽"},{id:"radon",name:"ラドン"},{id:"cold",name:"水風呂"}];
+const DENOMS = [["10000","万"],["5000","五千"],["1000","千"],["500","五百"],["100","百"],["50","五十"],["10","十"]];
+const TICKETS = [["common_use","共通券利用"],["chofu_use","調布券利用"],["common_sale","共通券販売"],["laundry","ランドリー金（枚）"]];
+
+const DEFAULTS = {
+  threshold:1.0, grace:15, closedDays:[2], dutyAlarm:true, cleanFrom:"10:00", cleanTo:"12:00",
+  due:{ "op_朝":"06:00","op_昼":"13:00","lunch_昼":"14:00","cl_夜":"26:00",
+        "duty_朝":"10:00","duty_昼":"15:00","duty_夕":"19:00","duty_夜":"24:00",
+        "out_朝":"06:00","out_昼":"12:00","out_夕":"15:00","out_夜":"20:00" },
+  staff:[], emails:[]
+};
+const DUE_LABELS = [["op_朝","OP（朝）"],["op_昼","OP（昼の確認）"],["lunch_昼","昼休憩 レジ締め"],["cl_夜","CL（閉店）"],
+  ["duty_朝","業務チェック 朝"],["duty_昼","業務チェック 昼"],["duty_夕","業務チェック 夕"],["duty_夜","業務チェック 夜"],
+  ["out_朝","外回り 朝"],["out_昼","外回り 昼"],["out_夕","外回り 夕"],["out_夜","外回り 夜"]];
+
+/* ===== 状態 ===== */
+const S = {
+  mode:null, tab:"bath", date:null, settings:clone(DEFAULTS),
+  bath:{}, ops:{}, duty:{}, money:{}, alerts:{}, shortages:[], loaded:{},
+  pin:null, readonly:false,
+  staff:lsGet("staff")||"", recent:JSON.parse(lsGet("recentStaff")||"[]"),
+  shift:{}, openSlots:new Set(), drafts:{}, confirmKey:null, overlay:null,
+  soundOn:false, fd:{}, dirty:false, lastBeep:0, seenAlerts:null, evals:[], pendingAlerts:new Set(), status:"loading"
+};
+let unsubs=[], actx=null, wakeLock=null, confirmTimer=null;
+
+function clone(o){return JSON.parse(JSON.stringify(o))}
+function lsGet(k){try{return localStorage.getItem("tny_"+k)}catch(e){return null}}
+function lsSet(k,v){try{localStorage.setItem("tny_"+k,v)}catch(e){}}
+function h(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+const $ = s => document.querySelector(s);
+
+/* ===== 日付・時刻（営業日は朝5時で切り替え） ===== */
+const DOW = ["日","月","火","水","木","金","土"];
+function pad(n){return String(n).padStart(2,"0")}
+function bizDate(t){const d=new Date((t||Date.now())-5*3600e3);return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function dateObj(ds){const [y,m,d]=ds.split("-").map(Number);return new Date(y,m-1,d)}
+function dow(ds){return dateObj(ds).getDay()}
+function atMin(ds,min){return dateObj(ds).getTime()+min*60e3}
+function parseHM(s){const m=/^(\d{1,2}):(\d{2})$/.exec(String(s||"").trim());return m?(+m[1])*60+(+m[2]):null}
+function fmtT(ms){const d=new Date(ms);return d.getHours()+":"+pad(d.getMinutes())}
+function fmtDate(ds){const d=dateObj(ds);return (d.getMonth()+1)+"/"+d.getDate()+"（"+DOW[d.getDay()]+"）"}
+function shiftDate(ds,n){const d=dateObj(ds);d.setDate(d.getDate()+n);return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function hourLabel(s){return s+"時"}
+function isWeekend(ds){const w=dow(ds);return w===0||w===6}
+function dueAt(key){const m=parseHM(S.settings.due[key]);return m==null?null:atMin(S.date,m)}
+function lateText(ms){const m=Math.floor(ms/60e3);return m>=60?Math.floor(m/60)+"時間"+(m%60?m%60+"分":"")+"超過":m+"分超過"}
+
+/* ===== 集計 ===== */
+function entryKey(sec,i,shift){return sec.id+pad(i)+"_"+shift}
+function entries(listId){return (S[LISTS[listId].doc].entries)||{}}
+function missingFor(listId,sec,shift){const e=entries(listId);return sec.items.map((t,i)=>e[entryKey(sec,i,shift)]?null:t).filter(Boolean)}
+function counts(listId){
+  const e=entries(listId);let total=0,done=0;
+  for(const sec of LISTS[listId].sections) for(const sh of sec.shifts) sec.items.forEach((t,i)=>{total++;if(e[entryKey(sec,i,sh)])done++});
+  return {total,done};
+}
+function bathSlot(s){return (S.bath.slots||{})[s]||null}
+function lowValues(rec,slot){
+  const out=[];if(!rec)return out;
+  for(const t of TUBS){const v=rec[t.id+"_cl"];if(v!=null&&v!==""&&+v<=S.settings.threshold)out.push({tub:t,v:+v,slot})}
+  return out;
+}
+
+/* 期限超過の判定（今日の営業日だけ）。level1=時間になっても未実施、level2=1時間後も未実施 */
+function evaluate(){
+  const out=[];const now=Date.now();
+  if(S.date!==bizDate()||!S.loaded.core) return out;
+  if((S.settings.closedDays||[]).includes(dow(S.date))) return out;
+  const g=(+S.settings.grace||0)*60e3;
+  const push=(key,due,title,detail,tab)=>{
+    if(due==null||now<due+g) return;
+    out.push({key,level:now>=due+3600e3?2:1,title,detail,tab,due,late:now-due});
+  };
+  const cf=parseHM(S.settings.cleanFrom),ct=parseHM(S.settings.cleanTo);
+  const inClean=s=>cf!=null&&ct!=null&&s*60>=cf&&s*60<ct;
+  for(const s of BATH_SLOTS){ if(!bathSlot(s)&&!inClean(s)) push("bath_"+s,atMin(S.date,s*60),hourLabel(s)+" 浴槽点検",MEASURE(s)?"温度・塩素濃度が未記入":"塩素投入量が未記入","bath"); }
+  for(const sec of LISTS.op.sections) for(const sh of sec.shifts){
+    const miss=missingFor("op",sec,sh); if(miss.length) push(sec.id+"_"+sh,dueAt(sec.id+"_"+sh),sec.name+"（"+sh+"）",miss.length+"項目 未完了","op");
+  }
+  const outSec=LISTS.duty.sections.find(x=>x.id==="outside");
+  for(const sh of SH4) if(missingFor("duty",outSec,sh).length) push("out_"+sh,dueAt("out_"+sh),"外回りの掃き掃除（"+sh+"）","未実施（"+outSec.shiftNotes[sh]+"）","duty");
+  if(S.settings.dutyAlarm) for(const sh of SH4){
+    let n=0; for(const sec of LISTS.duty.sections) if(!sec.dueKey) n+=missingFor("duty",sec,sh).length;
+    if(n) push("duty_"+sh,dueAt("duty_"+sh),"業務チェック（"+sh+"）",n+"項目 未完了","duty");
+  }
+  return out;
+}
+/* 期限超過の通知が「その後完了したか」 */
+function lateResolved(key){
+  if(key.startsWith("bath_")) return !!bathSlot(+key.slice(5));
+  const [id,sh]=key.split("_");
+  if(id==="duty"){let n=0;for(const sec of LISTS.duty.sections)if(!sec.dueKey)n+=missingFor("duty",sec,sh).length;return n===0}
+  if(id==="out") return missingFor("duty",LISTS.duty.sections.find(x=>x.id==="outside"),sh).length===0;
+  const sec=LISTS.op.sections.find(x=>x.id===id); return sec?missingFor("op",sec,sh).length===0:false;
+}
+
+/* ===== サーバー（Google Apps Script）との通信 ===== */
+const DOC_COLS=["bath","ops","duty","money","alerts"];
+let pollSeq=0;
+/* Apps Script へ POST（Cookie を送らないので Google のログイン状態に左右されない） */
+async function api(fn,...args){
+  const r=await fetch(API_URL,{method:"POST",credentials:"omit",redirect:"follow",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn,args})});
+  if(!r.ok) throw {message:"HTTP "+r.status};
+  const j=await r.json();
+  if(!j.ok) throw {message:j.error||"error"};
+  return j.result;
+}
+function deepMerge(a,b){
+  if(b===null||typeof b!=="object"||Array.isArray(b)) return b;
+  const out=(a&&typeof a==="object"&&!Array.isArray(a))?Object.assign({},a):{};
+  for(const k of Object.keys(b)) out[k]=deepMerge(out[k],b[k]);
+  return out;
+}
+const chains={};
+function writeMerge(path,patch){
+  const col=path.split("/")[0];
+  if(path.endsWith("/"+S.date)){S[col]=deepMerge(S[col],patch);pollSeq++;onData()}
+  const run=()=>api("mergeDoc",path,patch).then(doc=>{pollSeq++;if(path.endsWith("/"+S.date)){S[col]=doc;onData()}return doc});
+  const p=(chains[path]||Promise.resolve()).then(run,run);
+  chains[path]=p.catch(()=>{});
+  return p;
+}
+function saveErr(e){
+  console.error(e);
+  toast("保存できませんでした。通信を確認してもう一度押してください");
+  refresh();
+}
+async function refresh(){
+  const ds=S.date; const seq=++pollSeq;
+  try{
+    const keys=DOC_COLS.map(c=>c+"/"+ds).concat(["config/settings"]);
+    const [docs,shorts]=await Promise.all([api("getDocs",keys),api("listShortages")]);
+    if(seq!==pollSeq||ds!==S.date) return;
+    DOC_COLS.forEach(c=>{S[c]=docs[c+"/"+ds]||{}});
+    const d=docs["config/settings"]||{};
+    S.settings=Object.assign(clone(DEFAULTS),d,{due:Object.assign({},DEFAULTS.due,d.due||{})});
+    S.shortages=shorts||[]; S.loaded.core=true; S.online=true;
+    noticeNewAlerts(); onData();
+  }catch(e){
+    console.error(e);
+    if(!S.loaded.core){S.status="error";render()} else if(S.online){S.online=false;toast("通信できません。電波を確認してください")}
+  }
+}
+function subscribeDate(ds){
+  S.date=ds; S.bath={};S.ops={};S.duty={};S.money={};S.alerts={};S.loaded={};S.seenAlerts=null;
+  render(); refresh();
+}
+function onData(){S.status="ready";tick(true)}
+
+/* ===== 音・画面スリープ防止 ===== */
+function enableSound(){
+  try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();actx.resume();S.soundOn=true;beep(1)}catch(e){}
+  requestWake(); render();
+}
+function beep(level){
+  if(!actx||!S.soundOn) return;
+  const n=level>=2?4:2;const t0=actx.currentTime;
+  for(let i=0;i<n;i++){
+    const o=actx.createOscillator(),g=actx.createGain();o.type="square";o.frequency.value=level>=2?988:740;
+    o.connect(g);g.connect(actx.destination);const t=t0+i*0.32;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.18,t+0.02);g.gain.linearRampToValueAtTime(0,t+0.22);
+    o.start(t);o.stop(t+0.25);
+  }
+}
+async function requestWake(){try{if(navigator.wakeLock&&!wakeLock){wakeLock=await navigator.wakeLock.request("screen");wakeLock.addEventListener("release",()=>{wakeLock=null})}}catch(e){}}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&S.soundOn)requestWake()});
+
+function unackedAlerts(){
+  const items=S.alerts.items||{},acks=S.alerts.acks||{};
+  return Object.entries(items).filter(([k,a])=>!(acks[k]&&acks[k].level>=a.level)&&!(a.kind==="late"&&lateResolved(k)));
+}
+function noticeNewAlerts(){
+  const list=unackedAlerts().map(([k,a])=>k+":"+a.level);
+  if(S.seenAlerts===null){S.seenAlerts=new Set(list);return}
+  let fresh=0,lvl=1;
+  for(const k of list) if(!S.seenAlerts.has(k)){fresh++;S.seenAlerts.add(k);const a=(S.alerts.items||{})[k.split(":")[0]];if(a&&a.level>lvl)lvl=a.level}
+  if(fresh&&S.mode==="manager"){beep(lvl);toast("新しい通知が "+fresh+" 件あります")}
+}
+
+/* ===== 定期処理 ===== */
+let lastEvalSig="";
+function tick(fromData){
+  if(S.mode==="front"&&S.loaded.core&&S.date!==bizDate()) {subscribeDate(bizDate());return}
+  S.evals=evaluate();
+  const sig=S.evals.map(a=>a.key+a.level).join();
+  if(S.mode==="front"){
+    const top=S.evals.reduce((m,a)=>Math.max(m,a.level),0);
+    const now=Date.now();
+    const prev=new Set(lastEvalSig.split(","));
+    const fresh=S.evals.some(a=>!prev.has(a.key+a.level));
+    if(top&&S.soundOn&&(fresh||now-S.lastBeep>5*60e3)){beep(top);S.lastBeep=now}
+  }
+  const changed=sig!==lastEvalSig;
+  lastEvalSig=sig;
+  const n=S.mode==="manager"?unackedAlerts().length:S.evals.length;
+  document.title=(n?"("+n+") ":"")+"鶴の湯 業務記録";
+  render(!fromData&&!changed);
+}
+setInterval(()=>tick(false),30e3);
+
+/* ===== 描画 ===== */
+let lastOverlay=undefined;
+function render(lite){
+  const app=$("#app"); if(!app) return;
+  const active=document.activeElement;
+  const typing=active&&/INPUT|TEXTAREA|SELECT/.test(active.tagName)&&$("#mainZone")&&$("#mainZone").contains(active);
+  if(!S.mode){app.innerHTML=hdr()+startView();renderOverlay();return}
+  const h1=$("#hdr"),a1=$("#alarmZone"),m1=$("#mainZone");
+  if(h1&&a1&&m1){
+    h1.outerHTML=hdr(); $("#alarmZone").innerHTML=alarmBand();
+    if(typing) S.dirty=true;
+    else if(!lite||S.dirty){S.dirty=false;const y=window.scrollY;m1.innerHTML=S.mode==="front"?frontView():managerView();restoreForms();window.scrollTo(0,y)}
+  } else {
+    app.innerHTML=hdr()+'<div id="alarmZone">'+alarmBand()+'</div><main id="mainZone">'+(S.mode==="front"?frontView():managerView())+'</main>';
+    restoreForms();
+  }
+  renderOverlay();
+}
+
+function renderOverlay(){
+  let ov=$("#ovZone"); if(!ov){ov=document.createElement("div");ov.id="ovZone";document.body.appendChild(ov)}
+  if(S.overlay!==lastOverlay||S.overlay==="staff"){ov.innerHTML=overlayView();lastOverlay=S.overlay}
+}
+function restoreForms(){for(const id in S.fd){const el=document.getElementById(id);if(el)el.value=S.fd[id]}}
+function clearForm(f){[...f.elements].forEach(el=>{if(el.id)delete S.fd[el.id]});f.reset()}
+function hdr(){
+  const now=new Date();
+  const right = !S.mode ? "" :
+    '<span class="clock num">'+(S.date?fmtDate(S.date)+"　":"")+now.getHours()+":"+pad(now.getMinutes())+'</span>'+
+    '<button class="hbtn staff" data-act="pickStaff">'+(S.mode==="front"?"担当：":"確認者：")+h(S.staff||"未選択")+'</button>'+
+    (S.mode==="front"?
+      '<button class="hbtn'+(S.soundOn?" on":"")+'" data-act="sound">'+(S.soundOn?"通知音 ON":"通知音を有効にする")+'</button>':"")+
+    '<button class="hbtn" data-act="settings">設定</button>'+
+    '<button class="hbtn" data-act="switch">'+(S.mode==="front"?"確認画面へ":"フロント入力へ")+'</button>';
+  return '<header class="top" id="hdr"><div class="wrap"><div class="brand">鶴の湯<small>'+(S.mode==="front"?"フロント入力":S.mode==="manager"?"店長・副店長 確認":"業務記録")+'</small></div><div class="hdr-meta">'+right+'</div></div></header>';
+}
+function startView(){
+  return '<main class="wrap"><div class="start">'+
+    '<button data-act="mode" data-v="front"><b>フロント入力</b><span>iPad 用。浴槽点検・OP/CL・業務チェック・不足品・両替を記入します。</span></button>'+
+    '<button data-act="mode" data-v="manager"><b>店長・副店長 確認</b><span>携帯・パソコン用。記録の確認と、塩素低下・未実施の通知の確認ができます。</span></button>'+
+    '</div><p class="sub">この端末で選んだ画面は次回から自動で開きます。右上のボタンでいつでも切り替えられます。</p></main>';
+}
+function alarmBand(){
+  if(S.mode!=="front"||!S.evals.length) return "";
+  const chips=S.evals.slice().sort((a,b)=>b.level-a.level||a.due-b.due).map(a=>
+    '<button class="chip'+(a.level>=2?" l2":"")+'" data-act="tab" data-v="'+a.tab+'"><span class="dot"></span>'+h(a.title)+'　'+h(a.detail)+'（'+lateText(a.late)+(a.level>=2?"・店長に通知済み":"")+'）</button>').join("");
+  return '<div class="alarms"><div class="wrap"><span class="lbl">未実施</span>'+chips+'</div></div>';
+}
+function statusBlock(){
+  if(S.status==="error") return '<div class="panel plain"><h2>記録を読み込めませんでした</h2><p>通信状態を確認して、ページを開き直してください。</p></div>';
+  return "";
+}
+
+/* ---- フロント ---- */
+function frontView(){
+  const tabs=[["bath","浴槽点検"],["op","OP・CL"],["duty","業務チェック"],["short","不足品報告"],["money","両替・入浴券"]];
+  const late={};S.evals.forEach(a=>late[a.tab]=(late[a.tab]||0)+1);
+  let body="";
+  if(S.tab==="bath") body=bathFront();
+  else if(S.tab==="op"||S.tab==="duty") body=checkFront(S.tab);
+  else if(S.tab==="short") body=shortFront();
+  else body=moneyFront();
+  const closed=(S.settings.closedDays||[]).includes(dow(S.date||bizDate()));
+  return '<div class="wrap">'+statusBlock()+'<nav class="tabs" role="tablist">'+tabs.map(([k,n])=>'<button role="tab" class="'+(S.tab===k?"on":"")+'" data-act="tab" data-v="'+k+'">'+n+(late[k]?'<span class="badge">'+late[k]+'</span>':"")+'</button>').join("")+'</nav>'+
+    '<div class="panel">'+(closed?'<div class="pill warn" style="align-self:flex-start">本日は定休日（火曜）です。未実施の表示は止まっています</div>':"")+body+'</div></div>';
+}
+function bathFront(){
+  const now=Date.now();const ds=S.date;
+  const lateKeys=new Set(S.evals.map(a=>a.key));
+  const inj=isWeekend(ds)?3:2;
+  const parts=BATH_SLOTS.map(s=>{
+    const rec=bathSlot(s); const due=atMin(ds,s*60);
+    const open=S.openSlots.has(s)||(!rec&&due<=now+90*60e3&&due>=now-6*3600e3&&!S.openSlots.has(-s));
+    const isLate=lateKeys.has("bath_"+s);
+    const lows=lowValues(rec,s);
+    let status = rec ? (lows.length?'<span class="pill bad">塩素 低下</span>':'<span class="pill ok">記入済み</span>') :
+      isLate?'<span class="pill bad">未記入</span>':(s*60>=parseHM(S.settings.cleanFrom)&&s*60<parseHM(S.settings.cleanTo)?'<span class="pill mute">清掃時間（記入は任意）</span>':due<=now?'<span class="pill warn">記入時刻です</span>':'<span class="pill mute">'+hourLabel(s)+'に記入</span>');
+    let sum="";
+    if(rec){
+      sum=TUBS.map(t=>{
+        const tv=rec[t.id+"_t"],cv=rec[t.id+"_cl"];
+        if(tv==null&&cv==null) return "";
+        const low=cv!=null&&cv!==""&&+cv<=S.settings.threshold;
+        return '<span>'+t.name+' <b class="num">'+(tv!=null&&tv!==""?tv+"℃":"—")+'</b>'+(MEASURE(s)?' / <b class="num" style="'+(low?"color:var(--bad)":"")+'">'+(cv!=null&&cv!==""?cv+"ppm":"—")+'</b>':"")+'</span>';
+      }).join("")+(INJECT(s)?'<span>投入 主'+(rec.main_n??"—")+'個・ラドン'+(rec.radon_n??"—")+'個</span>':"")+(powderLabel(rec)?'<span>'+h(powderLabel(rec))+'</span>':"")+
+      '<span class="sub">'+h(rec.by||"")+' '+(rec.at?fmtT(rec.at):"")+'</span>';
+    }
+    const head='<div class="slot-h"><span class="hr num">'+s+'<small style="font-size:14px">時</small></span>'+status+'<div class="sum">'+sum+'</div>'+
+      (open?'<button class="btn small ghost" data-act="closeSlot" data-v="'+s+'">閉じる</button>':'<button class="btn small'+(rec?"":" primary")+'" data-act="openSlot" data-v="'+s+'">'+(rec?"修正":"記入")+'</button>')+'</div>';
+    if(!open) return '<div class="slot'+(isLate?" late":"")+'" id="slot'+s+'">'+head+'</div>';
+    const d=S.drafts[s]||Object.assign({},rec||{});
+    if(!S.drafts[s]){
+      if(INJECT(s)&&d.main_n==null){d.main_n=inj;d.radon_n=2}
+      S.drafts[s]=d;
+    }
+    if(!rec&&MEASURE(s)) for(const t of TUBS){const p=prevTemp(s,t.id);if(p&&d[t.id+"_t"]==null)d[t.id+"_t"]=(+p.v).toFixed(1)}
+    const val=k=>d[k]==null?"":h(d[k]);
+    const tubs=MEASURE(s)?'<div class="tubs">'+TUBS.map(t=>{
+      const cv=d[t.id+"_cl"];const low=cv!=null&&cv!==""&&+cv<=S.settings.threshold;
+      const p=prevTemp(s,t.id); const other=S.clOther&&S.clOther[s+"_"+t.id];
+      const cvs=clStr(cv);
+      const chips=CL_VALUES.map(v=>'<button type="button" class="'+(v==="2+"?"plus":+v<=S.settings.threshold?"lowv":"")+(cvs===v?" on":"")+'" data-act="clpick" data-slot="'+s+'" data-k="'+t.id+'_cl" data-v="'+v+'">'+v+'</button>').join("");
+      return '<div class="tub"><h4>'+t.name+'</h4>'+
+        '<div class="lbl"><span>温度（℃）</span><span>'+(p?"前回 "+h(p.v)+"（"+p.slot+"時）":"")+'</span></div>'+
+        stepper("in_"+s+"_"+t.id+"_t",'data-slot="'+s+'" data-k="'+t.id+'_t"',d[t.id+"_t"]??"","0.5",p?p.v:STD_TEMP[t.id])+
+        '<div class="lbl"><span>塩素濃度（ppm）'+(t.id==="cold"?"・任意":"")+'</span><span class="clsel">'+(cvs?'選択中 <b class="num'+(low?" low":"")+'">'+cvs+'</b>':"タップして選ぶ")+'</span></div>'+
+        '<div class="clchips" role="group" aria-label="'+t.name+' 塩素濃度">'+chips+'</div>'+
+        (other||(cvs&&!CL_VALUES.includes(cvs))?'<input class="f num'+(low?" low":"")+'" id="in_'+s+'_'+t.id+'_cl" inputmode="decimal" data-slot="'+s+'" data-k="'+t.id+'_cl" value="'+val(t.id+"_cl")+'" placeholder="例：2.5">':
+          '<div class="row"><button type="button" class="btn small ghost" data-act="clother" data-v="'+s+'_'+t.id+'">一覧にない値を入力</button>'+(cvs?'<button type="button" class="btn small ghost" data-act="clpick" data-slot="'+s+'" data-k="'+t.id+'_cl" data-v="">選択を消す</button>':"")+'</div>')+
+        '</div>';}).join("")+'</div>':'<p class="sub">'+hourLabel(s)+'は計測不要です。塩素の投入量だけ記入してください。</p>';
+    const injectBox=INJECT(s)?'<div class="inject"><span class="hint">固形塩素：主浴槽は'+(isWeekend(ds)?"土日祝":"平日")+'なので男女'+inj+'個ずつ（祝日は3個）、ラドンは濾過器へ2個。粉末は主浴槽 大さじ1（15g）・ラドン 小さじ2（10g）。</span>'+[
+      ['main_n','主浴槽 固形塩素（個／男女各）'],['radon_n','ラドン 固形塩素（個）']].map(([k,n])=>'<div class="fld"><span>'+n+'</span><div class="numchips" role="group" aria-label="'+n+'">'+[0,1,2,3,4].map(c=>'<button type="button" class="'+(+d[k]===c&&d[k]!==""&&d[k]!=null?"on":"")+'" data-act="clpick" data-slot="'+s+'" data-k="'+k+'" data-v="'+c+'">'+c+'</button>').join("")+'</div></div>').join("")+
+      '</div>':"";
+    const lowNow=MEASURE(s)&&TUBS.some(t=>{const cv=d[t.id+"_cl"];return cv!=null&&cv!==""&&+cv<=S.settings.threshold});
+    return '<div class="slot open'+(isLate?" late":"")+'" id="slot'+s+'">'+head+'<div class="slot-b">'+tubs+injectBox+powderBox(s,d,lowNow)+
+      '<label class="fld"><span>備考</span><input class="f" id="in_'+s+'_note" data-slot="'+s+'" data-k="note" value="'+val("note")+'"></label>'+
+      (lowNow?'<div class="warnline">塩素濃度が '+S.settings.threshold.toFixed(1)+'ppm 以下です。保存すると店長・副店長に通知されます。'+(hasPowder(d)?"":"粉末塩素を入れて、入れた場所を上で押してください。")+'</div>':"")+
+      '<div class="row"><span class="sub">担当：'+h(S.staff||"未選択")+'</span><span class="spacer"></span><button class="btn primary" data-act="saveSlot" data-v="'+s+'"'+(S.readonly?" disabled":"")+'>'+hourLabel(s)+'の記録を保存</button></div></div></div>';
+  }).join("");
+  return '<div class="row"><h2>浴槽点検記録票</h2><span class="sub">'+fmtDate(S.date)+'　基本2時間おきに計測。'+S.settings.threshold.toFixed(1)+'ppm 以下で店長・副店長に通知</span></div><div class="slots">'+parts+'</div>';
+}
+/* タップ入力の部品 */
+const CL_VALUES=[];for(let v=1;v<=20;v++)CL_VALUES.push((v/10).toFixed(1));CL_VALUES.push("2+");
+const clStr=v=>v==null||v===""?"":String(v)==="2+"?"2+":(+v).toFixed(1);
+const STD_TEMP={main:"42.0",radon:"40.0",cold:"17.0"};
+function stepper(id,attrs,value,step,base,extraBtns){
+  const dec=String(step).includes(".")?String(step).split(".")[1].length:0;
+  const big=extraBtns?'<button type="button" class="wide" data-act="stp" data-d="-'+extraBtns+'" aria-label="'+extraBtns+'減らす">−'+extraBtns+'</button>':"";
+  const bigP=extraBtns?'<button type="button" class="wide" data-act="stp" data-d="'+extraBtns+'" aria-label="'+extraBtns+'増やす">＋'+extraBtns+'</button>':"";
+  return '<div class="stp" data-base="'+h(base)+'" data-dec="'+dec+'">'+big+'<button type="button" data-act="stp" data-d="-'+step+'" aria-label="減らす">−</button>'+
+    '<input class="f num" id="'+id+'" '+attrs+' inputmode="decimal" value="'+h(value)+'">'+
+    '<button type="button" data-act="stp" data-d="'+step+'" aria-label="増やす">＋</button>'+bigP+'</div>';
+}
+/* 粉末塩素（主浴槽・ラドン × 男湯・女湯） */
+const PW=[["main","主浴槽","大さじ1（15g）"],["radon","ラドン","小さじ2（10g）"]];
+const SIDES=[["m","男湯"],["f","女湯"]];
+function hasPowder(r){return !!r&&PW.some(([id])=>SIDES.some(([sd])=>r["pw_"+id+"_"+sd]))}
+function powderLabel(r){
+  if(!r) return "";
+  const parts=PW.map(([id,n])=>{const on=SIDES.filter(([sd])=>r["pw_"+id+"_"+sd]).map(([,sn])=>sn.slice(0,1));return on.length?(id==="main"?"主":"ラ")+on.join(""):""}).filter(Boolean);
+  return parts.length?"粉末 "+parts.join("・"):(r.powder?"粉末":"");
+}
+function powderBox(s,d,lowNow){
+  const rows=PW.map(([id,n,amt])=>'<div class="pw-row"><span class="pw-n">'+n+'<small>'+amt+'</small></span><div class="numchips" role="group" aria-label="'+n+' 粉末塩素">'+
+    SIDES.map(([sd,sn])=>{const k="pw_"+id+"_"+sd;return '<button type="button" class="'+(d[k]?"on":"")+'" data-act="pwtoggle" data-slot="'+s+'" data-k="'+k+'" aria-pressed="'+(!!d[k])+'">'+sn+'</button>'}).join("")+'</div></div>').join("");
+  return '<div class="powder'+(lowNow&&!hasPowder(d)?" need":"")+'"><div class="lbl"><b style="color:var(--ink);font-size:14px">粉末塩素（'+S.settings.threshold.toFixed(1)+'ppm を下回ったら裏から投入）</b><span>入れた所を押す</span></div>'+rows+
+    '<span class="sub">男湯・女湯それぞれに入れるのがベストです。男性スタッフだけのときは男湯だけで OK。女性スタッフのときは男湯にも入れてください。</span></div>';
+}
+function prevTemp(s,tub){
+  for(let i=BATH_SLOTS.indexOf(s)-1;i>=0;i--){const r=bathSlot(BATH_SLOTS[i]);if(r&&r[tub+"_t"]!=null&&r[tub+"_t"]!=="")return {v:r[tub+"_t"],slot:BATH_SLOTS[i]}}
+  return null;
+}
+function defaultShift(listId){
+  const now=Date.now();
+  if(listId==="op"){
+    const a=dueAt("op_朝"),b=dueAt("lunch_昼");
+    if(a!=null&&now<a+3600e3) return "朝"; if(b!=null&&now<b+3600e3) return "昼"; return "夜";
+  }
+  for(const sh of SH4){const d=dueAt("duty_"+sh);if(d!=null&&now<d) return sh}
+  return "夜";
+}
+function checkFront(listId){
+  const L=LISTS[listId]; const sh=S.shift[listId]||defaultShift(listId);
+  const e=entries(listId); const lateKeys=new Set(S.evals.map(a=>a.key));
+  const seg='<div class="seg" role="group">'+L.shifts.map(x=>'<button class="'+(x===sh?"on":"")+'" data-act="shift" data-list="'+listId+'" data-v="'+x+'">'+x+'</button>').join("")+'</div>';
+  const secs=L.sections.filter(sec=>sec.shifts.includes(sh)).map(sec=>{
+    const dk=sec.dueKey?sec.dueKey+"_"+sh:listId==="duty"?"duty_"+sh:sec.id+"_"+sh;
+    const due=dueAt(dk); const isLate=lateKeys.has(dk);
+    const miss=missingFor(listId,sec,sh).length;
+    const items=sec.items.map((t,i)=>{
+      const k=entryKey(sec,i,sh); const r=e[k];
+      const conf=S.confirmKey===listId+"|"+k;
+      return '<button class="item'+(r?" done":"")+(conf?" confirm":"")+(!r&&isLate?" late":"")+'" data-act="toggle" data-list="'+listId+'" data-v="'+k+'" aria-pressed="'+(!!r)+'">'+
+        '<span class="box"></span><span class="t">'+h(t)+'</span><span class="who">'+(conf?"もう一度押すと取り消し":r?h(r.by)+" "+fmtT(r.at):"")+'</span></button>';
+    }).join("");
+    const pct=Math.round((sec.items.length-miss)/sec.items.length*100);
+    return '<section class="sec"><div class="sec-h"><h3>'+h(sec.name)+(sec.id==="op"&&sh==="昼"?"　昼の確認":"")+'</h3><span class="sub num">'+(sec.items.length-miss)+' / '+sec.items.length+'</span><div class="progress"><i style="width:'+pct+'%"></i></div>'+
+      (due!=null?'<span class="due'+(isLate?" late":"")+'">期限 '+h(S.settings.due[dk])+(isLate?"（超過）":"")+'</span>':"")+'</div>'+
+      (sec.note||sec.shiftNotes?'<p class="sub" style="margin:0">'+h(sec.shiftNotes?sh+"："+sec.shiftNotes[sh]:sec.note)+'</p>':"")+'<div class="items">'+items+'</div></section>';
+  }).join("");
+  return '<div class="row"><h2>'+L.name+'</h2><span class="sub">'+fmtDate(S.date)+'</span><span class="spacer"></span>'+seg+'</div>'+secs;
+}
+function shortFront(){
+  const today=S.shortages.filter(x=>x.date===S.date);
+  return '<div class="row"><h2>不足品報告表</h2><span class="sub">足りない備品・消耗品を報告すると、店長・副店長の画面に並びます</span></div>'+
+    '<form class="grid4" data-form="short"><label class="fld" style="grid-column:span 2"><span>不足品名</span><input class="f" id="sh_item" name="item" required placeholder="例：シャンプー詰め替え"></label>'+
+    '<label class="fld"><span>残量</span><input class="f" id="sh_remain" name="remain" placeholder="例：残り1本"></label>'+
+    '<label class="fld"><span>備考</span><input class="f" id="sh_note" name="note"></label>'+
+    '<div class="row"><button class="btn primary" type="submit"'+(S.readonly?" disabled":"")+'>報告する</button></div></form>'+
+    '<h3>本日の報告</h3>'+(today.length?shortTable(today,false):'<div class="empty">本日の報告はまだありません</div>');
+}
+function shortTable(list,mgr){
+  return '<div class="tw"><table><thead><tr><th>日付</th><th>担当</th><th>不足品名</th><th>残量</th><th>備考</th><th>状況</th></tr></thead><tbody>'+
+    list.map(x=>'<tr><td class="num">'+(/^\d{4}-\d{2}-\d{2}$/.test(x.date)?fmtDate(x.date):h(x.date))+' '+h(x.time||"")+'</td><td>'+h(x.by)+'</td><td class="item-name"><b>'+h(x.item)+'</b></td><td>'+h(x.remain)+'</td><td class="item-name">'+h(x.note)+'</td><td>'+
+      (x.done?'<span class="pill ok">対応済み '+h(x.doneBy||"")+'</span>':(mgr?'<button class="btn small" data-act="shortDone" data-v="'+h(x.id)+'">対応済みにする</button>':'<span class="pill warn">未対応</span>'))+'</td></tr>').join("")+
+    '</tbody></table></div>';
+}
+function sumDen(o){return DENOMS.reduce((s,[v])=>s+(+((o||{})[v])||0)*(+v),0)}
+function moneyFront(){
+  const t=S.money.tickets||{}; const ex=Object.entries(S.money.exchanges||{}).sort((a,b)=>(a[1].at||0)-(b[1].at||0));
+  const den=(p)=>'<div class="grid2" style="gap:8px">'+DENOMS.map(([v,n])=>'<div class="fld" style="display:grid;grid-template-columns:3.5em 1fr;align-items:center;gap:8px"><span style="font-weight:700;color:var(--ink)">'+n+'</span>'+stepper("ex_"+p+"_"+v,'name="'+p+'_'+v+'"',"","1","1")+'</div>').join("")+'</div>';
+  return '<div class="grid2"><div class="sec"><div class="sec-h"><h3>入浴券（本日）</h3></div>'+
+    '<form class="grid4" data-form="tickets">'+TICKETS.map(([k,n])=>'<div class="fld" style="grid-column:1/-1;display:flex;flex-direction:column;gap:4px"><span class="sub">'+n+'</span>'+stepper("tk_"+k,'name="'+k+'"',t[k]??"","1","1","10")+'</div>').join("")+
+    '<div class="row" style="grid-column:1/-1"><span class="sub">'+(t.by?"最終更新 "+h(t.by)+" "+fmtT(t.at):"")+'</span><span class="spacer"></span><button class="btn primary" type="submit"'+(S.readonly?" disabled":"")+'>入浴券を保存</button></div></form></div>'+
+    '<div class="sec"><div class="sec-h"><h3>両替記録</h3><span class="sub">入金＝レジ→金庫、出金＝金庫→レジ（枚数）</span></div>'+
+    '<form class="sec" data-form="exchange">'+
+    '<span class="sub">入金（レジ→金庫）</span>'+den("in")+'<span class="sub">出金（金庫→レジ）</span>'+den("out")+
+    '<label class="fld"><span>備考</span><input class="f" id="ex_note" name="note"></label>'+
+    '<div class="row"><span class="sub" id="exCheck">枚数を入れると金額を自動で計算します</span><span class="spacer"></span><button class="btn primary" type="submit"'+(S.readonly?" disabled":"")+'>両替を記録</button></div></form></div></div>'+
+    '<h3>本日の両替</h3>'+(ex.length?exTable(ex):'<div class="empty">本日の両替記録はまだありません</div>');
+}
+function exTable(ex){
+  const den=o=>DENOMS.filter(([v])=>+((o||{})[v])).map(([v,n])=>n+"×"+o[v]).join("　")||"—";
+  return '<div class="tw"><table><thead><tr><th>時刻</th><th>担当</th><th>金額</th><th>入金（レジ→金庫）</th><th>出金（金庫→レジ）</th><th>照合</th><th>備考</th></tr></thead><tbody>'+
+    ex.map(([id,x])=>{const ok=sumDen(x.in)===+x.amount&&sumDen(x.out)===+x.amount;
+      return '<tr><td class="num">'+(x.at?fmtT(x.at):"")+'</td><td>'+h(x.by)+'</td><td class="num"><b>'+(+x.amount).toLocaleString()+'円</b></td><td class="num">'+den(x.in)+'</td><td class="num">'+den(x.out)+'</td><td>'+(ok?'<span class="pill ok">一致</span>':'<span class="pill bad">不一致</span>')+'</td><td class="item-name">'+h(x.note)+'</td></tr>'}).join("")+
+    '</tbody></table></div>';
+}
+
+/* ---- 確認（店長・副店長） ---- */
+function managerView(){
+  const ds=S.date; const today=bizDate();
+  const items=S.alerts.items||{},acks=S.alerts.acks||{};
+  const all=Object.entries(items).sort((a,b)=>(b[1].at||0)-(a[1].at||0));
+  const un=[],done=[];
+  all.forEach(([k,a])=>{const acked=acks[k]&&acks[k].level>=a.level;const res=a.kind==="late"&&lateResolved(k);(acked||res?done:un).push([k,a,acked,res])});
+  const alRow=([k,a,acked,res])=>'<div class="al'+(a.kind==="chlorine"?" cl":"")+(a.level>=2?" l2":"")+(acked||res?" acked":"")+'"><div class="body"><div class="ttl">'+h(a.title)+'</div><div class="meta">'+
+    (a.kind==="chlorine"?"塩素濃度の低下":a.level>=2?"1時間以上 未実施":"期限を過ぎて未実施")+'　'+h(a.detail)+'　通知 '+(a.at?fmtT(a.at):"")+
+    (res?'　<span class="pill ok">その後完了</span>':"")+(acked?'　確認：'+h(acks[k].by||"")+" "+fmtT(acks[k].at):"")+'</div></div>'+
+    (!acked&&!res?'<button class="btn small primary" data-act="ack" data-v="'+h(k)+'">確認しました</button>':"")+'</div>';
+  // tiles
+  const measured=BATH_SLOTS.filter(MEASURE); const filled=measured.filter(s=>bathSlot(s)).length;
+  let latest=null; for(const s of BATH_SLOTS.slice().reverse()){const r=bathSlot(s);if(r&&MEASURE(s)){latest={s,r};break}}
+  let minCl=null; if(latest) TUBS.forEach(t=>{const v=latest.r[t.id+"_cl"];if(v!=null&&v!==""&&!isNaN(+v)&&(minCl==null||+v<minCl.v))minCl={v:+v,t}});
+  const op=counts("op"),du=counts("duty");
+  const tiles='<div class="tiles">'+
+    '<div class="tile'+(un.length?" bad":" ok")+'"><span class="k">未確認の通知</span><span class="v num">'+un.length+'<small>件</small></span></div>'+
+    '<div class="tile'+(minCl&&minCl.v<=S.settings.threshold?" bad":"")+'"><span class="k">最新の残留塩素（最低値）</span><span class="v num">'+(minCl?minCl.v.toFixed(1)+'<small>ppm '+minCl.t.name+' '+latest.s+'時</small>':'—')+'</span></div>'+
+    '<div class="tile"><span class="k">浴槽点検 記入</span><span class="v num">'+filled+'<small>/ '+measured.length+' 回</small></span></div>'+
+    '<div class="tile"><span class="k">OP・CL ／ 業務チェック</span><span class="v num">'+Math.round(op.done/op.total*100)+'<small>%</small> '+Math.round(du.done/du.total*100)+'<small>%</small></span></div></div>';
+  const dateBar='<div class="datebar"><button class="btn small" data-act="day" data-v="-1">前日</button><input class="f" type="date" id="mgrDate" value="'+ds+'" max="'+today+'"><button class="btn small" data-act="day" data-v="1"'+(ds>=today?" disabled":"")+'>翌日</button>'+(ds!==today?'<button class="btn small primary" data-act="day" data-v="0">今日へ</button>':'<span class="pill acc">今日の営業日</span>')+'<span class="sub">'+fmtDate(ds)+(S.settings.closedDays.includes(dow(ds))?"・定休日":"")+'</span></div>';
+  const openShort=S.shortages.filter(x=>!x.done); const recentShort=S.shortages.slice(0,30);
+  const ex=Object.entries(S.money.exchanges||{}).sort((a,b)=>(a[1].at||0)-(b[1].at||0)); const t=S.money.tickets||{};
+  return '<div class="wrap mgr">'+statusBlock()+dateBar+
+    '<section class="card"><div class="row"><h2>通知</h2><span class="sub">残留塩素が '+S.settings.threshold.toFixed(1)+'ppm 以下で記入されたとき（メールでも届きます）</span><span class="spacer"></span>'+
+      '<button class="btn small'+(S.soundOn?" primary":"")+'" data-act="sound">'+(S.soundOn?"通知音 ON":"通知音を有効にする")+'</button></div>'+
+      (un.length?'<div class="alist">'+un.map(alRow).join("")+'</div>':'<div class="empty">未確認の通知はありません</div>')+
+      (done.length?'<details><summary class="sub">確認済み・完了済み '+done.length+' 件</summary><div class="alist" style="margin-top:8px">'+done.map(alRow).join("")+'</div></details>':"")+'</section>'+
+    tiles+
+    '<section class="card"><div class="row"><h2>浴槽点検記録</h2><span class="sub">赤は '+S.settings.threshold.toFixed(1)+'ppm 以下</span></div>'+bathTable()+'</section>'+
+    '<section class="card"><h2>OP・CL チェック</h2>'+checkTable("op")+'</section>'+
+    '<section class="card"><h2>業務チェック</h2>'+checkTable("duty")+'</section>'+
+    '<section class="card"><div class="row"><h2>不足品報告</h2><span class="pill '+(openShort.length?"warn":"ok")+'">未対応 '+openShort.length+' 件</span></div>'+(recentShort.length?shortTable(recentShort,true):'<div class="empty">報告はまだありません</div>')+'</section>'+
+    '<section class="card"><h2>入浴券・両替</h2><div class="grid4">'+TICKETS.map(([k,n])=>'<div class="tile" style="background:var(--surface-2)"><span class="k">'+n+'</span><span class="v num">'+(t[k]??"—")+'</span></div>').join("")+'</div>'+
+      (ex.length?exTable(ex):'<div class="empty">この日の両替記録はありません</div>')+'</section></div>';
+}
+function bathTable(){
+  const lateKeys=new Set(S.evals.map(a=>a.key));
+  const rows=BATH_SLOTS.map(s=>{
+    const r=bathSlot(s);
+    const cell=(k,unit,isCl)=>{const v=r?r[k]:null;if(v==null||v==="")return '<td class="c dim">—</td>';const low=isCl&&+v<=S.settings.threshold;return '<td class="c num'+(low?" low":"")+'">'+h(v)+'</td>'};
+    const tubs=TUBS.map(t=>MEASURE(s)?cell(t.id+"_t")+cell(t.id+"_cl",0,true):'<td class="c dim" colspan="2">計測不要</td>').join("");
+    const inj=[r&&INJECT(s)?'主'+(r.main_n??"—")+'・ラ'+(r.radon_n??"—"):"",powderLabel(r)].filter(Boolean).join("　");
+    const who=r?h(r.by||"")+' <span class="dim">'+(r.at?fmtT(r.at):"")+'</span>':(lateKeys.has("bath_"+s)?'未記入':'');
+    return '<tr><th class="num">'+s+'時</th>'+tubs+'<td class="num">'+inj+'</td><td class="'+(!r&&lateKeys.has("bath_"+s)?"miss":"")+'">'+who+'</td><td class="item-name">'+h(r&&r.note)+'</td></tr>';
+  }).join("");
+  return '<div class="tw"><table><thead><tr><th rowspan="2">時間</th>'+TUBS.map(t=>'<th class="c" colspan="2">'+t.name+'</th>').join("")+'<th rowspan="2">塩素投入</th><th rowspan="2">担当</th><th rowspan="2">備考</th></tr><tr>'+TUBS.map(()=>'<th class="c">温度℃</th><th class="c">塩素ppm</th>').join("")+'</tr></thead><tbody>'+rows+'</tbody></table></div>';
+}
+function checkTable(listId){
+  const L=LISTS[listId]; const e=entries(listId); const now=Date.now(); const isToday=S.date===bizDate();
+  const lateKeys=new Set(S.evals.map(a=>a.key));
+  let body="";
+  for(const sec of L.sections){
+    body+='<tr><th colspan="'+(L.shifts.length+1)+'" style="background:var(--accent-soft);color:var(--accent)">'+h(sec.name)+'</th></tr>';
+    sec.items.forEach((t,i)=>{
+      body+='<tr><td class="item-name">'+h(t)+'</td>'+L.shifts.map(sh=>{
+        if(!sec.shifts.includes(sh)) return '<td class="c dim">　</td>';
+        const r=e[entryKey(sec,i,sh)];
+        if(r) return '<td class="c done">'+h(r.by)+' <span class="num">'+fmtT(r.at)+'</span></td>';
+        const dk=sec.dueKey?sec.dueKey+"_"+sh:listId==="duty"?"duty_"+sh:sec.id+"_"+sh;
+        const past=!isToday||lateKeys.has(dk);
+        return '<td class="c '+(past&&(!isToday||lateKeys.has(dk))?"miss":"dim")+'">'+(past?"未":"—")+'</td>';
+      }).join("")+'</tr>';
+    });
+  }
+  return '<div class="tw"><table><thead><tr><th>項目</th>'+L.shifts.map(sh=>'<th class="c">'+sh+'</th>').join("")+'</tr></thead><tbody>'+body+'</tbody></table></div>';
+}
+
+/* ---- オーバーレイ ---- */
+function overlayView(){
+  if(S.overlay==="staff"){
+    const names=[...new Set([...(S.settings.staff||[]),...S.recent])];
+    return '<div class="overlay" data-act="closeOv"><div class="sheet" role="dialog" aria-label="担当者を選ぶ"><h2>担当者を選んでください</h2>'+
+      '<p class="sub" style="margin:0">チェックや記録には、ここで選んだ名前が残ります。交代したら切り替えてください。</p>'+
+      (names.length?'<div class="names">'+names.map(n=>'<button class="'+(n===S.staff?"on":"")+'" data-act="setStaff" data-v="'+h(n)+'">'+h(n)+'</button>').join("")+'</div>':'<div class="empty">名前の一覧はまだありません。下に入力してください</div>')+
+      '<form class="row" data-form="staff"><input class="f" id="newStaff" name="name" placeholder="名前を入力" style="flex:1"><button class="btn primary" type="submit">この名前にする</button></form>'+
+      '<div class="row"><span class="spacer"></span><button class="btn" data-act="closeOv">閉じる</button></div></div></div>';
+  }
+  if(S.overlay==="pin"){
+    return '<div class="overlay" data-act="closeOv"><form class="sheet" data-form="pin" role="dialog" aria-label="管理PIN"><h2>設定</h2>'+
+      '<p class="sub" style="margin:0">店長・副店長の管理PINを入力してください。</p>'+
+      '<input class="f num" id="pinIn" name="pin" type="password" inputmode="numeric" autocomplete="off">'+
+      '<div class="row"><span class="spacer"></span><button class="btn" type="button" data-act="closeOv">やめる</button><button class="btn primary" type="submit">開く</button></div></form></div>';
+  }
+  if(S.overlay==="settings"){
+    const st=S.settings;
+    return '<div class="overlay" data-act="closeOv"><form class="sheet" data-form="settings" role="dialog" aria-label="設定"><h2>設定</h2>'+
+      '<div class="grid4"><label class="fld"><span>塩素の通知基準（ppm 以下）</span><input class="f num" id="st_th" name="threshold" inputmode="decimal" value="'+h(st.threshold)+'"></label>'+
+      '<label class="fld"><span>期限から表示までの猶予（分）</span><input class="f num" id="st_gr" name="grace" inputmode="numeric" value="'+h(st.grace)+'"></label></div>'+
+      '<div class="grid4"><label class="fld"><span>清掃時間 開始</span><input class="f num" id="st_cf" name="cleanFrom" value="'+h(st.cleanFrom)+'"></label><label class="fld"><span>清掃時間 終了</span><input class="f num" id="st_ct" name="cleanTo" value="'+h(st.cleanTo)+'"></label></div>'+
+      '<h3>作業の期限（24時以降は 25:00 のように入力）</h3><div class="grid4">'+DUE_LABELS.map(([k,n])=>'<label class="fld"><span>'+n+'</span><input class="f num" id="st_due_'+k+'" name="due_'+k+'" value="'+h(st.due[k])+'" placeholder="HH:MM"></label>').join("")+'</div>'+
+      '<label class="check"><input type="checkbox" id="st_duty" name="dutyAlarm"'+(st.dutyAlarm?" checked":"")+'>業務チェック（外回り以外）の未完了も画面に表示する</label>'+
+      '<label class="check"><input type="checkbox" id="st_tue" name="closedTue"'+(st.closedDays.includes(2)?" checked":"")+'>火曜は定休日（未実施の表示を止める）</label>'+
+      '<label class="fld"><span>スタッフの名前（1行に1人）</span><textarea class="f" id="st_staff" name="staff" rows="4">'+h((st.staff||[]).join("\n"))+'</textarea></label>'+
+      '<h3>メール通知</h3><p class="sub" style="margin:0">残留塩素が基準値以下で記入されると、すぐに下のアドレスへメールが届きます。アプリを開いていない人にも届きます。</p>'+
+      '<label class="fld"><span>送信先メールアドレス（1行に1件）</span><textarea class="f" id="st_emails" name="emails" rows="3">'+h((st.emails||[]).join("\n"))+'</textarea></label>'+
+      '<label class="fld"><span>管理PIN を変更する（変更しないときは空欄）</span><input class="f num" id="st_newpin" name="newPin" type="password" inputmode="numeric" autocomplete="new-password"></label>'+
+      '<div class="row"><button class="btn" type="button" data-act="testMail">テスト送信</button><span class="spacer"></span><button class="btn" type="button" data-act="closeOv">やめる</button><button class="btn primary" type="submit">保存</button></div></form></div>';
+  }
+  return "";
+}
+
+/* ===== 操作 ===== */
+let toastTimer=null;
+function toast(msg){
+  let t=$("#toast"); if(!t){t=document.createElement("div");t.id="toast";t.className="toast";t.setAttribute("role","status");document.body.appendChild(t)}
+  t.textContent=msg;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.hidden=true},3500);
+}
+function needStaff(){if(!S.staff){S.overlay="staff";render();toast("先に担当者を選んでください");return true}return false}
+function setMode(m){S.mode=m;lsSet("mode",m);try{history.replaceState(null,"","?mode="+m)}catch(e){}if(m==="front"&&S.date!==bizDate())subscribeDate(bizDate());S.seenAlerts=null;noticeNewAlerts();tick(false)}
+
+document.addEventListener("click",async ev=>{
+  const el=ev.target.closest("[data-act]"); if(!el) return;
+  const act=el.dataset.act, v=el.dataset.v;
+  if(act==="closeOv"&&el.classList.contains("overlay")&&ev.target!==el) return;
+  switch(act){
+    case "mode": setMode(v); break;
+    case "switch": setMode(S.mode==="front"?"manager":"front"); break;
+    case "tab": S.tab=v; render(); window.scrollTo(0,0); break;
+    case "sound": enableSound(); break;
+    case "pickStaff": S.overlay="staff"; render(); break;
+    case "settings": S.overlay=S.pin!=null?"settings":"pin"; render(); setTimeout(()=>{const i=$("#pinIn");if(i)i.focus()},50); break;
+    case "closeOv": S.overlay=null; render(); break;
+    case "setStaff": chooseStaff(v); break;
+    case "shift": S.shift[el.dataset.list]=v; render(); break;
+    case "openSlot": S.openSlots.add(+v); S.openSlots.delete(-v); render(); break;
+    case "closeSlot": S.openSlots.delete(+v); S.openSlots.add(-v); delete S.drafts[v]; render(); break;
+    case "saveSlot": saveSlot(+v); break;
+    case "stp": {
+      const box=el.closest(".stp"),inp=box.querySelector("input");const dec=+box.dataset.dec||0;
+      let x=parseFloat(inp.value);
+      if(isNaN(x)) x=Math.max(0,parseFloat(box.dataset.base)||0); else x=Math.max(0,x+(+el.dataset.d));
+      inp.value=x.toFixed(dec); inp.dispatchEvent(new Event("input",{bubbles:true})); break;
+    }
+    case "clpick": {
+      const sl=el.dataset.slot;(S.drafts[sl]=S.drafts[sl]||{})[el.dataset.k]=v===""?null:v;
+      if(v==="")delete (S.clOther||{})[sl+"_"+el.dataset.k.replace("_cl","")];
+      render(); break;
+    }
+    case "pwtoggle": {const sl=el.dataset.slot;const d=(S.drafts[sl]=S.drafts[sl]||{});d[el.dataset.k]=!d[el.dataset.k];render();break;}
+    case "clother": S.clOther=S.clOther||{}; S.clOther[v]=true; render(); setTimeout(()=>{const i=$("#in_"+v+"_cl");if(i)i.focus()},50); break;
+    case "toggle": toggleItem(el.dataset.list,v); break;
+    case "ack": ackAlert(v); break;
+    case "shortDone": try{S.shortages=await api("markShortageDone",v,S.staff||"店長・副店長");render()}catch(e){saveErr(e)} break;
+    case "day": { const n=+v; subscribeDate(n===0?bizDate():shiftDate(S.date,n)); break; }
+    case "testMail": {
+      const f=el.closest("form"); const emails=f.emails.value.split(/[\s,、]+/).filter(Boolean);
+      if(!emails.length){toast("送信先を入力してください");break}
+      try{const ok=await api("testMail",S.pin,emails);toast(ok?"テストメールを送信しました":"送信できませんでした。アドレスを確認してください")}
+      catch(e){toast("送信できませんでした（"+(e&&e.message||"エラー")+"）")}
+      break;
+    }
+  }
+});
+document.addEventListener("change",ev=>{
+  const el=ev.target;
+  if(el.id==="mgrDate"&&el.value){subscribeDate(el.value>bizDate()?bizDate():el.value);return}
+  if(el.dataset&&el.dataset.slot&&el.type==="checkbox"){const s=el.dataset.slot;(S.drafts[s]=S.drafts[s]||{})[el.dataset.k]=el.checked}
+});
+document.addEventListener("input",ev=>{
+  const el=ev.target;
+  if(el.dataset&&el.dataset.slot&&el.type!=="checkbox"){
+    const s=el.dataset.slot;(S.drafts[s]=S.drafts[s]||{})[el.dataset.k]=el.value;
+    if(/_cl$/.test(el.dataset.k)){const low=el.value!==""&&+el.value<=S.settings.threshold;el.classList.toggle("low",low)}
+  }
+  if(el.id&&el.form&&/^(short|exchange|tickets)$/.test(el.form.dataset.form||"")) S.fd[el.id]=el.value;
+  if(el.form&&el.form.dataset.form==="exchange"){
+    const f=el.form;const g=p=>DENOMS.reduce((s,[d])=>s+(+f[p+"_"+d].value||0)*(+d),0);
+    const i=g("in"),o=g("out");const c=$("#exCheck");
+    if(c) c.innerHTML='金額（入金）<b class="num">'+i.toLocaleString()+'</b>円 ／ 出金 <b class="num">'+o.toLocaleString()+'</b>円 '+(i&&i===o?'<span class="pill ok">一致</span>':i||o?'<span class="pill bad">不一致</span>':"");
+  }
+});
+document.addEventListener("focusout",()=>{setTimeout(()=>{const a=document.activeElement;if(S.dirty&&(!a||!/INPUT|TEXTAREA|SELECT/.test(a.tagName)))render(true)},250)});
+document.addEventListener("submit",async ev=>{
+  ev.preventDefault(); const f=ev.target; const kind=f.dataset.form;
+  if(kind==="staff"){const n=f.name.value.trim();if(n)chooseStaff(n);return}
+  if(kind==="settings"){saveSettings(f);return}
+  if(kind==="pin"){
+    const pin=f.pin.value.trim();
+    try{const r=await api("checkPin",pin);if(r.ok){S.pin=pin;S.overlay="settings";render()}else toast("PIN が違います")}catch(e){toast("通信できません")}
+    return;
+  }
+  if(needStaff()) return;
+  if(kind==="short"){
+    const item=f.item.value.trim(); if(!item) return;
+    try{S.shortages=await api("addShortage",S.date,S.staff,item,f.remain.value.trim(),f.note.value.trim());clearForm(f);render();toast("不足品を報告しました")}catch(e){saveErr(e)}
+  }
+  if(kind==="tickets"){
+    const t={by:S.staff,at:Date.now()};TICKETS.forEach(([k])=>{const x=f[k].value.trim();t[k]=x===""?null:+x});
+    try{await writeMerge("money/"+S.date,{tickets:t});[...f.elements].forEach(el=>{if(el.id)delete S.fd[el.id]});toast("入浴券を保存しました")}catch(e){saveErr(e)}
+  }
+  if(kind==="exchange"){
+    const g=p=>{const o={};DENOMS.forEach(([d])=>{const x=+f[p+"_"+d].value;if(x)o[d]=x});return o};
+    const amount=DENOMS.reduce((s,[d])=>s+(+f["in_"+d].value||0)*(+d),0);
+    if(!amount){toast("入金の枚数を入れてください");return}
+    const id="x"+Date.now().toString(36);
+    try{await writeMerge("money/"+S.date,{exchanges:{[id]:{by:S.staff,amount,in:g("in"),out:g("out"),note:f.note.value.trim(),at:Date.now()}}});clearForm(f);$("#exCheck").textContent="記録しました";toast("両替を記録しました")}catch(e){saveErr(e)}
+  }
+});
+function chooseStaff(n){
+  S.staff=n;lsSet("staff",n);S.recent=[n,...S.recent.filter(x=>x!==n)].slice(0,12);lsSet("recentStaff",JSON.stringify(S.recent));
+  S.overlay=null;render();toast("担当："+n);
+}
+async function toggleItem(listId,key){
+  if(needStaff()) return;
+  const e=entries(listId); const ck=listId+"|"+key;
+  if(e[key]){
+    if(S.confirmKey!==ck){S.confirmKey=ck;clearTimeout(confirmTimer);confirmTimer=setTimeout(()=>{S.confirmKey=null;render(true)},3000);render(true);return}
+    S.confirmKey=null;
+    try{await writeMerge(LISTS[listId].doc+"/"+S.date,{entries:{[key]:null}})}catch(err){saveErr(err)}
+    return;
+  }
+  try{await writeMerge(LISTS[listId].doc+"/"+S.date,{entries:{[key]:{by:S.staff,at:Date.now()}}})}catch(err){saveErr(err)}
+}
+async function saveSlot(s){
+  if(needStaff()) return;
+  const d=Object.assign({},S.drafts[s]||{});
+  const rec={by:S.staff,at:Date.now()};
+  const num=x=>{if(x==null||String(x).trim()==="")return null;const n=+String(x).replace(/[^\d.]/g,"");return isFinite(n)?n:null};
+  if(MEASURE(s)) for(const t of TUBS){rec[t.id+"_t"]=num(d[t.id+"_t"]);rec[t.id+"_cl"]=String(d[t.id+"_cl"]).trim()==="2+"?"2+":num(d[t.id+"_cl"])}
+  if(INJECT(s)){rec.main_n=num(d.main_n);rec.radon_n=num(d.radon_n)}
+  PW.forEach(([id])=>SIDES.forEach(([sd])=>{const k="pw_"+id+"_"+sd;rec[k]=!!d[k]}));
+  rec.powder=hasPowder(rec); rec.note=(d.note||"").trim();
+  if(MEASURE(s)&&rec.main_cl==null&&rec.radon_cl==null&&rec.main_t==null){toast("主浴槽かラドンの値を入力してください");return}
+  const btn=document.querySelector('[data-act="saveSlot"][data-v="'+s+'"]'); if(btn){btn.disabled=true;btn.textContent="保存中…"}
+  try{
+    const r=await api("saveBath",S.date,s,rec);
+    pollSeq++; S.bath=r.doc; if(r.alerts) S.alerts=r.alerts;
+    delete S.drafts[s]; S.openSlots.delete(s); S.openSlots.add(-s);
+    if(r.lows) toast("保存しました。塩素低下を店長・副店長にメールで通知しました");
+    else toast(hourLabel(s)+"の記録を保存しました");
+    onData();
+  }catch(e){saveErr(e)}
+}
+async function ackAlert(key){
+  const a=(S.alerts.items||{})[key]; if(!a) return;
+  try{await writeMerge("alerts/"+S.date,{acks:{[key]:{level:a.level,at:Date.now(),by:S.staff||"店長・副店長"}}});toast("確認済みにしました")}catch(e){saveErr(e)}
+}
+async function saveSettings(f){
+  const due={};let bad=null;
+  DUE_LABELS.forEach(([k,n])=>{const v=f["due_"+k].value.trim();if(parseHM(v)==null)bad=n;due[k]=v});
+  if(bad){toast(bad+" の時刻を HH:MM で入力してください");return}
+  const th=+f.threshold.value; if(!isFinite(th)||th<=0){toast("塩素の基準値を正しく入力してください");return}
+  if(parseHM(f.cleanFrom.value)==null||parseHM(f.cleanTo.value)==null){toast("清掃時間を HH:MM で入力してください");return}
+  const newPin=f.newPin.value.trim();
+  const data={cleanFrom:f.cleanFrom.value.trim(),cleanTo:f.cleanTo.value.trim(),threshold:th,grace:Math.max(0,+f.grace.value||0),due,dutyAlarm:f.dutyAlarm.checked,closedDays:f.closedTue.checked?[2]:[],
+    staff:f.staff.value.split(/\n/).map(x=>x.trim()).filter(Boolean),emails:f.emails.value.split(/[\s,、]+/).filter(Boolean)};
+  try{const d=await api("saveSettings",S.pin,data,newPin||null);if(newPin)S.pin=newPin;
+    S.settings=Object.assign(clone(DEFAULTS),d,{due:Object.assign({},DEFAULTS.due,d.due||{})});S.overlay=null;render();toast("設定を保存しました")}
+  catch(e){toast("保存できませんでした（"+(e&&e.message||"エラー")+"）")}
+}
+
+/* ===== 起動 ===== */
+function boot(){
+  S.mode=(INIT_MODE==="front"||INIT_MODE==="manager")?INIT_MODE:(lsGet("mode")||null);
+  subscribeDate(bizDate());
+  setInterval(()=>{if(document.visibilityState!=="hidden")refresh()},20000);
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")refresh()});
+}
+boot();
+})();
+</script>
+</body>
+</html>
