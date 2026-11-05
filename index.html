@@ -599,7 +599,7 @@ function hdr(){
     (S.mode==="front"?
       '<button class="hbtn'+(S.soundOn?" on":"")+'" data-act="sound">'+(S.soundOn?"音：ON":"音を出す")+'</button>':"")+
     (S.mode==="front"?'<button class="hbtn" data-act="help">使い方</button><button class="hbtn" data-act="more" aria-label="その他">その他</button>':
-      '<button class="hbtn" data-act="settings">設定</button><button class="hbtn" data-act="switch">フロント入力へ</button>');
+      '<a class="hbtn" href="voices.html" style="text-decoration:none">お客様の声</a><button class="hbtn" data-act="settings">設定</button><button class="hbtn" data-act="switch">フロント入力へ</button>');
   return '<header class="top" id="hdr"><div class="wrap"><div class="brand">鶴の湯<small>'+(S.mode==="front"?"フロント入力":S.mode==="manager"?"店長・副店長 確認":"業務記録")+'</small></div><div class="hdr-meta">'+right+'</div></div></header>';
 }
 function startView(){

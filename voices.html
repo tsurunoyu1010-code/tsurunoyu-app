@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>鶴の湯 お客様の声</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="鶴の湯 声">
+<meta name="theme-color" content="#1e4d72">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* 業務記録（index.html）と同じ色・文字。スマホ1列、パソコンでは中央に寄せる */
+:root{
+  --bg:#edf1f3; --surface:#ffffff; --surface-2:#f6f8f9; --ink:#15212b; --muted:#5a6a77; --line:#d3dbe0;
+  --accent:#1e4d72; --accent-ink:#ffffff; --accent-soft:#dce7ef;
+  --ok:#2c7a52; --ok-soft:#dbeee2; --warn:#a96300; --warn-soft:#fbebd0; --bad:#c13a20; --bad-soft:#f8ded7;
+  --f-display:"Dela Gothic One","Zen Kaku Gothic New","Hiragino Sans",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP","Yu Gothic",system-ui,sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f161c; --surface:#17212a; --surface-2:#1c2832; --ink:#e5edf2; --muted:#93a4b1; --line:#2b3945;
+  --accent:#86b6dc; --accent-ink:#0b1720; --accent-soft:#1e3345;
+  --ok:#6cc896; --ok-soft:#173326; --warn:#e8ab4f; --warn-soft:#3a2a10; --bad:#ff7d65; --bad-soft:#3f1d16; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161c; --surface:#17212a; --surface-2:#1c2832; --ink:#e5edf2; --muted:#93a4b1; --line:#2b3945;
+  --accent:#86b6dc; --accent-ink:#0b1720; --accent-soft:#1e3345;
+  --ok:#6cc896; --ok-soft:#173326; --warn:#e8ab4f; --warn-soft:#3a2a10; --bad:#ff7d65; --bad-soft:#3f1d16; color-scheme:dark}
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.65;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--accent);color:var(--accent-ink)}
+header.top .wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-block:10px}
+.brand{font-family:var(--f-display);font-size:20px;letter-spacing:.06em;white-space:nowrap}
+.brand small{font-family:var(--f-body);font-weight:500;font-size:12px;opacity:.8;margin-left:8px;letter-spacing:.1em}
+.hdr-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto}
+.hbtn{border:1px solid color-mix(in srgb,var(--accent-ink) 40%,transparent);background:transparent;color:var(--accent-ink);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:500;white-space:nowrap;text-decoration:none}
+.hbtn.staff{font-weight:700}
+main{padding-block:16px 40px;display:grid;gap:16px}
+h2{font-family:var(--f-display);font-weight:400;font-size:18px;margin:0;letter-spacing:.03em}
+.lead{color:var(--muted);font-size:14px;margin:4px 0 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:14px}
+.banner{background:var(--accent-soft);border-radius:var(--r);padding:12px 14px;display:grid;gap:8px}
+.banner.err{background:var(--bad-soft);border-left:4px solid var(--bad)}
+.btn{border:0;border-radius:var(--r);background:var(--accent);color:var(--accent-ink);font-weight:700;padding:12px 16px;min-height:48px;font-size:16px}
+.btn.sub{background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>.btn{flex:1 1 150px}
+.link{background:none;border:0;padding:0;color:var(--accent);font-weight:700;font-size:15px}
+.stages{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.stage{text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:12px;display:grid;gap:2px}
+.stage .n{font-family:var(--f-display);font-size:28px;line-height:1.1}
+.stage .t{font-size:13px;color:var(--muted)}
+.stage.hot{border-color:var(--bad)} .stage.hot .n{color:var(--bad)}
+.stage[aria-pressed="true"]{outline:2px solid var(--accent)}
+.list{display:grid;gap:10px}
+.item{text-align:left;width:100%;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:12px 14px;display:grid;gap:6px}
+.item .top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.item .id{font-weight:700;color:var(--ink);font-size:15px}
+.item p{margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pill{font-size:12px;font-weight:700;border-radius:999px;padding:1px 10px;border:1.5px solid currentColor;white-space:nowrap}
+.pill.todo{color:var(--bad)} .pill.wait{color:var(--warn)} .pill.done{color:var(--muted)}
+.stars{color:var(--warn);letter-spacing:1px}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}
+dt{color:var(--muted)} dd{margin:0;min-width:0}
+.label{font-size:13px;color:var(--muted);margin-bottom:4px;font-weight:500}
+.box{background:var(--surface-2);border-radius:8px;padding:10px 12px;white-space:pre-wrap;overflow-wrap:anywhere}
+textarea{width:100%;min-height:9em;line-height:1.7;border:1.5px solid var(--line);border-radius:8px;padding:10px;background:var(--surface);resize:vertical}
+input[type=text],input[type=password]{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px;background:var(--surface)}
+.count{font-size:13px;color:var(--muted);text-align:right}
+.count.over{color:var(--bad);font-weight:700}
+.mic{font-size:13px;color:var(--muted);margin:4px 0 0}
+.next{border:2px dashed var(--accent);border-radius:var(--r);padding:12px;display:grid;gap:8px}
+.reasons{display:flex;flex-wrap:wrap;gap:8px}
+.reasons label{display:flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px}
+.names{display:flex;flex-wrap:wrap;gap:8px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;z-index:20;max-width:calc(100% - 32px)}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="brand">鶴の湯<small>お客様の声</small></div>
+  <div class="hdr-meta">
+    <button class="hbtn staff" id="whoBtn" type="button">名前をえらぶ</button>
+    <a class="hbtn" href="./?mode=manager">業務記録へ</a>
+  </div>
+</div></header>
+<main class="wrap" id="view"><div class="banner">読み込み中…</div></main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+"use strict";
+/* お客様の声用の Apps Script（gas/voices.gs をデプロイした URL） */
+const VOICE_API = "";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1xGDbByDd8rAxMMos62PPOQTZ3l35htkFWXOyo7FAen8/edit";
+const SCAN_FOLDER = "https://drive.google.com/drive/folders/11DbZj2t1L5pug_U3Z5COZpNAbUE_ldNd";
+const ANSWER_MAX = 130; // 返答用紙の点線7本に入る目安
+const NOREPLY = "回答なし";
+// 列（A〜T）
+const C = {id:0,date:1,hour:2,age:3,freq:4,sat:5,kind:6,voice:7,answer:8,check:9,status:10,fbAsked:11,fb:12,fixed:13,paper:14,action:15,staff:16,posted:17,net:18,memo:19};
+const STAGES = [
+  {key:"check",  label:"回答を書いてOKする", who:"副店長・店長", pill:"todo", hot:true},
+  {key:"fb",     label:"相良さんの返事まち", who:"相良さん", pill:"wait"},
+  {key:"fix",    label:"回答を確定する", who:"副店長・店長", pill:"todo", hot:true},
+  {key:"paper",  label:"返答用紙ができるのを待つ", who:"金曜の朝に自動", pill:"wait"},
+  {key:"post",   label:"印刷してロビーに貼る", who:"副店長・店長", pill:"todo", hot:true},
+  {key:"done",   label:"貼りおわった", who:"", pill:"done"},
+  {key:"noreply",label:"回答しない声", who:"記録として残すだけ", pill:"done"}
+];
+function stageOf(r){
+  if(r.v[C.answer]===NOREPLY) return "noreply";
+  if(r.v[C.posted]) return "done";
+  if(r.v[C.check]!=="確認済み") return "check";
+  if(!r.v[C.fb]) return "fb";
+  if(r.v[C.fixed]!=="確定") return "fix";
+  if(!r.v[C.paper]) return "paper";
+  return "post";
+}
+
+/* 業務記録と同じ端末の記憶（tny_ で始まる） */
+function lsGet(k){try{return localStorage.getItem("tny_"+k)}catch(e){return null}}
+function lsSet(k,v){try{if(v==null)localStorage.removeItem("tny_"+k);else localStorage.setItem("tny_"+k,v)}catch(e){}}
+const S = {rows:[], loaded:false, error:"", pin:lsGet("voicePin")||"", name:lsGet("voiceName")||lsGet("staff")||"",
+  overlay:null, filter:null, open:null, saving:false, noReplyOpen:false};
+
+const $=s=>document.querySelector(s);
+const h=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const len=s=>[...String(s||"").replace(/\s/g,"")].length;
+function today(){const d=new Date(Date.now()+9*3600e3);return d.getUTCFullYear()+"/"+String(d.getUTCMonth()+1).padStart(2,"0")+"/"+String(d.getUTCDate()).padStart(2,"0")}
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2600)}
+function stars(n){n=parseInt(n,10);return n>=1&&n<=5?"★".repeat(n)+"☆".repeat(5-n):"—"}
+function stageInfo(k){return STAGES.find(s=>s.key===k)}
+
+async function api(fn,...args){
+  const r=await fetch(VOICE_API,{method:"POST",credentials:"omit",redirect:"follow",
+    headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn,args})});
+  if(!r.ok) throw {message:"HTTP "+r.status};
+  const j=await r.json();
+  if(!j.ok) throw {message:j.error||"error"};
+  return j.result;
+}
+
+async function load(){
+  S.error=""; render();
+  try{ S.rows=await api("list",S.pin); S.loaded=true; }
+  catch(e){
+    if(e.message==="PIN"){ S.pin=""; lsSet("voicePin",null); S.overlay="pin"; toast("PIN が違います"); }
+    else S.error="表を読めませんでした。電波を確認して「読みこみなおす」を押してください。";
+  }
+  render();
+}
+
+/* 指定の行に書く。updates は {I:"…",J:"…"} */
+async function write(r,updates,msg){
+  if(!S.name){S.overlay="name";render();return false}
+  S.saving=true; render();
+  try{
+    const v=await api("write",S.pin,r.row,r.v[C.id],updates);
+    r.v=v; S.saving=false; render(); if(msg) toast(msg); return true;
+  }catch(e){
+    S.saving=false;
+    if(e.message==="moved"){toast("表の行が動いていました。読みこみなおします");await load();return false}
+    if(e.message==="PIN"){S.pin="";lsSet("voicePin",null);S.overlay="pin";render();toast("PIN をもう一度入れてください");return false}
+    render(); toast("保存できませんでした。通信を確認してもう一度押してください"); return false;
+  }
+}
+/* 備考（T列）の最後を「回答：名字」にする（前の「回答：…」は入れかえる） */
+function memoWithAuthor(memo){
+  const base=String(memo||"").replace(/\s*(\/\s*)?回答：[^/]*/g,"").trim();
+  return (base?base+" / ":"")+"回答："+S.name;
+}
+
+/* ---------- 画面 ---------- */
+function render(){
+  $("#whoBtn").textContent=S.name?S.name+" さん":"名前をえらぶ";
+  const v=$("#view");
+  if(!VOICE_API){v.innerHTML='<div class="banner err">お客様の声の Apps Script がまだつながっていません（準備中）。</div>';return}
+  if(S.overlay==="name"){v.innerHTML=nameView();setTimeout(()=>{const i=$("#nameIn");if(i&&!S.name)i.focus()},30);return}
+  if(!S.pin||S.overlay==="pin"){v.innerHTML=pinView();setTimeout(()=>{const i=$("#pinIn");if(i)i.focus()},30);return}
+  if(S.error){v.innerHTML='<div class="banner err"><div>'+h(S.error)+'</div><div class="row"><button class="btn sub" data-act="reload">読みこみなおす</button></div></div>';return}
+  if(!S.loaded){v.innerHTML='<div class="banner">表を読みこんでいます…</div>';return}
+  if(S.open){const r=S.rows.find(x=>x.v[C.id]===S.open);if(r){v.innerHTML=detailView(r);return}}
+  v.innerHTML=homeView();
+}
+
+function pinView(){
+  return '<div class="card"><h2>管理 PIN を入れてください</h2>'+
+    '<p class="lead">業務記録の「設定」と同じ、店長・副店長の PIN です。この端末に覚えるので、次からは入れなくて大丈夫です。お客様が使う端末（フロントの iPad など）では入れないでください。</p>'+
+    '<input type="password" id="pinIn" inputmode="numeric" autocomplete="off" aria-label="管理 PIN">'+
+    '<button class="btn" data-act="pin">ひらく</button></div>';
+}
+function nameView(){
+  let recent=[];try{recent=JSON.parse(lsGet("recentStaff")||"[]")}catch(e){}
+  return '<div class="card"><h2>あなたの名前（名字）</h2>'+
+    '<p class="lead">回答を書いた人として記録し、返答用紙の名前（鶴の湯 副店長 ○○）にも使います。</p>'+
+    (recent.length?'<div class="names">'+recent.map(n=>'<button class="btn sub" data-name="'+h(n)+'">'+h(n)+'</button>').join("")+'</div>':"")+
+    '<label class="label" for="nameIn">名字を入れる</label><input type="text" id="nameIn" placeholder="例：花崎" value="'+h(S.name)+'" autocomplete="off">'+
+    '<div class="row"><button class="btn sub" data-act="nameCancel">もどる</button><button class="btn" data-act="saveName">これでOK</button></div></div>';
+}
+
+function homeView(){
+  const counts={};STAGES.forEach(s=>counts[s.key]=0);
+  S.rows.forEach(r=>counts[stageOf(r)]++);
+  const shown=S.rows.filter(r=>!S.filter||stageOf(r)===S.filter).slice().reverse();
+  const mine=counts.check+counts.fix+counts.post;
+  return (!S.name?'<div class="banner">はじめに、右上の「名前をえらぶ」で名字を入れてください。だれが回答したか記録に残り、返答用紙の名前にもなります。</div>':"")+
+  '<div><h2>'+(mine?"いま、"+mine+"件やることがあります":"いま、やることはありません")+'</h2>'+
+  '<p class="lead">赤い数字が、副店長・店長の出番です。押すと、その分だけ下に出ます。</p></div>'+
+  '<div class="stages">'+STAGES.map(s=>'<button class="stage'+(s.hot&&counts[s.key]?" hot":"")+'" data-filter="'+s.key+'" aria-pressed="'+(S.filter===s.key)+'">'+
+    '<span class="n num">'+counts[s.key]+'</span><span>'+s.label+'</span>'+(s.who?'<span class="t">'+s.who+'</span>':"")+'</button>').join("")+'</div>'+
+  '<div class="row" style="justify-content:space-between;align-items:center"><h2>'+(S.filter?h(stageInfo(S.filter).label):"ぜんぶの声")+'（'+shown.length+'件）</h2>'+
+  '<div class="row">'+(S.filter?'<button class="link" data-filter="">ぜんぶ見る</button>':"")+'<button class="link" data-act="reload">読みこみなおす</button></div></div>'+
+  '<div class="list">'+(shown.map(r=>{const s=stageInfo(stageOf(r));return '<button class="item" data-open="'+h(r.v[C.id])+'">'+
+    '<span class="top"><span class="id">'+h(r.v[C.id])+'</span><span>'+h(r.v[C.date])+'</span><span class="stars">'+stars(r.v[C.sat])+'</span><span>'+h(r.v[C.kind])+'</span><span class="pill '+s.pill+'">'+s.label+'</span></span>'+
+    '<p>'+h(r.v[C.voice])+'</p></button>'}).join("")||'<p class="lead">ここに入る声はありません。</p>')+'</div>';
+}
+
+function detailView(r){
+  const v=r.v, st=stageOf(r), n=len(v[C.answer]);
+  const canEdit=v[C.fixed]!=="確定"&&st!=="noreply";
+  const dis=S.saving?" disabled":"";
+  const author=(v[C.memo].match(/回答：([^/]+)/)||[])[1];
+  let next="";
+  if(st==="check") next='<div class="next"><strong>あなたの出番：回答を書いてOKする</strong><span>上の欄に、お客様への回答を<b>自分の言葉で</b>書いてください。書けたら「この回答でOK」を押します。金曜の朝に相良さんへ確認のメールが自動で届きます。</span><button class="btn" data-act="ok"'+dis+'>この回答でOK</button></div>';
+  if(st==="fb") next='<div class="next"><strong>いまは相良さんの返事まち</strong><span>相良さんが表の「相良さんFB」に返事を書くと次に進みます。回答を直したいときは、上の欄を直して押しなおしてください。</span><button class="btn sub" data-act="ok"'+dis+'>直した回答でOK</button></div>';
+  if(st==="fix") next='<div class="next"><strong>あなたの出番：回答を確定する</strong><span>相良さんの返事を読んで、直すところがあれば直してから「回答を確定」を押します。金曜の朝に返答用紙が自動でできます。</span><div class="row"><button class="btn sub" data-act="ok"'+dis+'>回答だけ保存</button><button class="btn" data-act="fix"'+dis+'>回答を確定</button></div></div>';
+  if(st==="paper") next='<div class="next"><strong>返答用紙ができるのを待っています</strong><span>金曜の朝に自動でできます。急ぐときは、Claude の「鶴の湯お客様の声運用係」に「急いでやって」と送ってください。</span></div>';
+  if(st==="post") next='<div class="next"><strong>あなたの出番：印刷してロビーに貼る</strong><span>「返答用紙をひらく」から印刷して、ロビーに貼ってください。貼りおわったら「貼った」を押します。</span><div class="row"><a class="btn sub" href="'+h(v[C.paper])+'" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">返答用紙をひらく</a><button class="btn" data-act="posted"'+dis+'>貼った</button></div></div>';
+  if(st==="noreply") next='<div class="next"><strong>この声には回答しないことにしました</strong><span>表には記録として残ります。相良さんへの確認や返答用紙づくりはしません。</span><button class="btn sub" data-act="undoNoreply"'+dis+'>やっぱり回答する（もどす）</button></div>';
+  if(["check","fb","fix"].includes(st)) next+=S.noReplyOpen?
+    '<div class="next"><strong>この声には回答しませんか？</strong><span class="lead">理由をえらんでください（いくつでも）。表の「備考」に残ります。</span><div class="reasons">'+
+    ["内容がわからない","お店と関係ない内容","いたずら・らくがき","ほかの声と同じ内容","その他"].map(x=>'<label><input type="checkbox" name="nr" value="'+x+'">'+x+'</label>').join("")+
+    '</div><div class="row"><button class="btn sub" data-act="noreplyCancel">やめる</button><button class="btn" data-act="noreply"'+dis+'>回答しない</button></div></div>'
+    :'<button class="link" data-act="noreplyOpen" style="justify-self:start">この声には回答しない…</button>';
+  if(st==="done") next='<div class="next"><strong>貼りおわりました（'+h(v[C.posted])+'）</strong></div>';
+  return '<button class="link" data-act="close" style="justify-self:start">← 一覧にもどる</button>'+
+  '<div class="card"><div class="row" style="align-items:center"><h2>'+h(v[C.id])+'</h2><span class="pill '+stageInfo(st).pill+'">'+stageInfo(st).label+'</span></div>'+
+  '<dl><dt>来た日</dt><dd>'+h(v[C.date])+(v[C.hour]?" "+h(v[C.hour])+"時ごろ":"")+'</dd><dt>満足度</dt><dd><span class="stars">'+stars(v[C.sat])+'</span> '+h(v[C.sat])+'</dd>'+
+  '<dt>声の種類</dt><dd>'+h(v[C.kind])+'</dd><dt>来る回数</dt><dd>'+h(v[C.freq])+'</dd><dt>年代</dt><dd>'+h(v[C.age])+'</dd>'+
+  (author?'<dt>回答した人</dt><dd>'+h(author.trim())+'</dd>':"")+'</dl>'+
+  '<div><div class="label">お客様の声（書いてあるとおり）</div><div class="box">'+h(v[C.voice])+'</div></div>'+
+  '<div><div class="label">鶴の湯からの回答'+(canEdit?"（ここに書きます）":"（確定ずみ）")+'</div>'+
+  (canEdit?'<textarea id="ansIn" aria-label="回答" placeholder="ここに回答を書いてください（例：お礼 → ひとこと → またのご来店をお待ちしております。）">'+h(v[C.answer])+'</textarea>'+
+    '<div class="count'+(n>ANSWER_MAX?" over":"")+'" id="count">'+countText(n)+'</div>'+
+    '<p class="mic">🎤 声でも書けます：スマホはキーボードのマイク、Mac は欄をクリックして「control」を2回（または「編集 → 音声入力を開始」）。</p>'
+    :'<div class="box">'+h(v[C.answer])+'</div>')+'</div>'+
+  (v[C.fb]?'<div><div class="label">相良さんの返事</div><div class="box">'+h(v[C.fb])+'</div></div>':"")+
+  (v[C.action]&&v[C.action]!=="なし"?'<div><div class="label">お店でやること（改善アクション）</div><div class="box">'+h(v[C.action])+'</div></div>':"")+
+  next+
+  '<p class="lead">手書きのスキャンは <a href="'+SCAN_FOLDER+'" target="_blank" rel="noopener">スキャンのフォルダ</a>（ファイル名が管理ID）。表をそのまま見るときは <a href="'+SHEET_URL+'" target="_blank" rel="noopener">管理表</a>。</p></div>';
+}
+function countText(n){return n+"字 ／ 目安"+ANSWER_MAX+"字まで"+(n>ANSWER_MAX?"（長いと返答用紙からはみ出します）":"")}
+
+/* ---------- 操作 ---------- */
+document.addEventListener("click",async ev=>{
+  const t=ev.target.closest("button,[data-filter]"); if(!t) return;
+  if(t.id==="whoBtn"){S.overlay="name";render();return}
+  if(t.dataset.name!==undefined){setName(t.dataset.name);return}
+  if(t.dataset.filter!==undefined){S.filter=t.dataset.filter&&S.filter!==t.dataset.filter?t.dataset.filter:null;render();return}
+  if(t.dataset.open){S.open=t.dataset.open;S.noReplyOpen=false;render();window.scrollTo(0,0);return}
+  const act=t.dataset.act; if(!act) return;
+  if(act==="pin"){
+    const p=$("#pinIn").value.trim(); if(!p) return toast("PIN を入れてください");
+    t.disabled=true;
+    try{await api("ping",p);S.pin=p;lsSet("voicePin",p);S.overlay=null;load()}
+    catch(e){t.disabled=false;toast(e.message==="PIN"?"PIN が違います":"通信できません")}
+    return;
+  }
+  if(act==="saveName"){setName($("#nameIn").value);return}
+  if(act==="nameCancel"){S.overlay=null;render();return}
+  if(act==="reload"){load();return}
+  if(act==="close"){S.open=null;S.noReplyOpen=false;render();return}
+  if(act==="noreplyOpen"||act==="noreplyCancel"){S.noReplyOpen=act==="noreplyOpen";render();return}
+  const r=S.rows.find(x=>x.v[C.id]===S.open); if(!r) return;
+  const ta=$("#ansIn"); const ans=ta?ta.value.trim():r.v[C.answer];
+  if(act==="ok"){
+    if(!ans) return toast("回答が空です。自分の言葉で書いてから押してください");
+    if(!S.name){S.overlay="name";render();return}
+    await write(r,{I:ans,J:"確認済み",T:memoWithAuthor(r.v[C.memo])},"OKしました。金曜の朝に相良さんへ確認が届きます");
+  }
+  if(act==="fix"){
+    if(!ans) return toast("回答が空です");
+    if(!S.name){S.overlay="name";render();return}
+    const u={N:"確定"}; if(ans!==r.v[C.answer]){u.I=ans;u.J="確認済み";u.T=memoWithAuthor(r.v[C.memo])}
+    await write(r,u,"確定しました。金曜の朝に返答用紙ができます");
+  }
+  if(act==="noreply"){
+    if(!S.name){S.overlay="name";render();return}
+    const why=[...document.querySelectorAll('input[name="nr"]:checked')].map(x=>x.value).join("・")||"理由なし";
+    const memo=(r.v[C.memo]?r.v[C.memo]+" / ":"")+"回答なし（"+why+"・"+S.name+"・"+today()+"）";
+    if(await write(r,{I:NOREPLY,K:"対応済み",T:memo},"回答しないことにしました。記録には残ります")){S.noReplyOpen=false;render()}
+  }
+  if(act==="undoNoreply") await write(r,{I:"",K:"対応中"},"もとにもどしました。回答を書いて「この回答でOK」を押してください");
+  if(act==="posted") await write(r,{K:"対応済み",R:today()},"おつかれさまでした。貼った日を記録しました");
+});
+document.addEventListener("input",ev=>{
+  if(ev.target.id!=="ansIn") return;
+  const n=len(ev.target.value),c=$("#count"); if(!c) return;
+  c.textContent=countText(n); c.classList.toggle("over",n>ANSWER_MAX);
+});
+document.addEventListener("keydown",ev=>{
+  if(ev.key!=="Enter") return;
+  if(ev.target.id==="pinIn") document.querySelector('[data-act="pin"]').click();
+  if(ev.target.id==="nameIn") document.querySelector('[data-act="saveName"]').click();
+});
+function setName(n){
+  n=String(n||"").trim(); if(!n) return toast("名字を入れてください");
+  S.name=n; lsSet("voiceName",n); S.overlay=null; render(); toast(n+" さん、よろしくお願いします");
+}
+
+if(!S.name) S.overlay="name";
+render();
+if(VOICE_API&&S.pin) load();
+})();
+</script>
+</body>
+</html>
