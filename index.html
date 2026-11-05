@@ -167,6 +167,84 @@ label.fld > span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pw-n small{font-weight:500;color:var(--muted);font-size:12px}
 .pw-row .numchips button{min-width:88px}
 
+/* フェーダー（温度・塩素） */
+.tub h4{display:flex;align-items:baseline;gap:8px}
+.fad-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;color:var(--muted);font-size:15px;margin-top:4px}
+.fad-v{font-size:26px;font-weight:700;color:var(--ink);line-height:1.1}
+.fad-v.unset{font-size:17px;color:var(--warn)}
+.fad-v.low{color:var(--bad)}
+input.fader{-webkit-appearance:none;appearance:none;width:100%;height:46px;margin:0;background:transparent;touch-action:none}
+input.fader:focus{outline:none}
+input.fader::-webkit-slider-runnable-track{height:14px;border-radius:7px;background:var(--accent-soft);border:1px solid var(--line)}
+input.fader.cl:not(.unset)::-webkit-slider-runnable-track{background:linear-gradient(90deg,var(--bad-soft) 0 var(--th),var(--ok-soft) var(--th) 100%)}
+input.fader::-webkit-slider-thumb{-webkit-appearance:none;width:42px;height:42px;margin-top:-15px;border-radius:50%;background:var(--accent);border:4px solid var(--surface);box-shadow:0 2px 8px rgba(0,0,0,.3)}
+input.fader.unset::-webkit-slider-thumb{background:#9aa5ae}
+input.fader::-moz-range-track{height:14px;border-radius:7px;background:var(--accent-soft)}
+input.fader::-moz-range-thumb{width:36px;height:36px;border-radius:50%;background:var(--accent);border:4px solid var(--surface)}
+input.fader.unset::-moz-range-thumb{background:#9aa5ae}
+.fad-scale{position:relative;display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-top:-6px}
+.fad-scale .th{position:absolute;transform:translateX(-50%);color:var(--bad);font-weight:700}
+.tub{gap:4px}
+.fad-val{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.fad-row > span:first-child{white-space:nowrap}
+.fad-v.low::after{content:"低い";display:inline-block;margin-left:4px;padding:1px 6px;border-radius:4px;background:var(--bad);color:#fff;font-size:13px;vertical-align:middle}
+.nudge{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--surface);font-size:22px;font-weight:700;color:var(--accent);touch-action:manipulation;flex:none}
+.nudge:active{background:var(--accent-soft)}
+input.fader.unset::-webkit-slider-runnable-track{background:repeating-linear-gradient(45deg,var(--surface-2) 0 8px,var(--line) 8px 16px)}
+input.fader.unset::-webkit-slider-thumb{opacity:.45}
+.same{align-self:flex-start;border:1px dashed var(--accent);background:var(--surface);color:var(--accent);border-radius:999px;padding:8px 14px;font-weight:700;font-size:15px}
+
+/* ===== フロント（iPad）：明るい配色・大きめの文字 ===== */
+body[data-mode="front"]{font-size:18px;color-scheme:light;
+  --bg:#edf1f3; --surface:#ffffff; --surface-2:#f4f7f8; --ink:#111b24; --muted:#4c5b67; --line:#c9d3d9;
+  --accent:#1e4d72; --accent-ink:#ffffff; --accent-soft:#dce7ef;
+  --ok:#24704a; --ok-soft:#d8eedf; --warn:#9a5a00; --warn-soft:#fbe8c8; --bad:#b8321a; --bad-soft:#f9dcd4}
+body[data-mode="front"] h2{font-size:23px}
+body[data-mode="front"] h3{font-size:19px}
+body[data-mode="front"] .sub{font-size:15px}
+body[data-mode="front"] .hbtn{font-size:16px;padding:9px 16px}
+body[data-mode="front"] nav.tabs button{font-size:19px;padding:14px 20px}
+body[data-mode="front"] .seg button{font-size:20px;padding:12px 28px}
+body[data-mode="front"] .item{min-height:74px;font-size:18px;padding:14px 16px}
+body[data-mode="front"] .item .box{width:36px;height:36px}
+body[data-mode="front"] .item .who{font-size:14px}
+body[data-mode="front"] .btn{font-size:18px;padding:14px 22px}
+body[data-mode="front"] .btn.small{font-size:15px;padding:10px 14px}
+body[data-mode="front"] input.f,body[data-mode="front"] textarea.f{font-size:19px;padding:13px 14px}
+body[data-mode="front"] label.fld,body[data-mode="front"] .lbl{font-size:15px}
+body[data-mode="front"] .slot-h .hr{font-size:30px}
+body[data-mode="front"] .slot-h .sum{font-size:16px}
+body[data-mode="front"] .clchips button{min-height:54px;font-size:20px}
+body[data-mode="front"] .numchips button{min-height:56px;font-size:20px}
+body[data-mode="front"] .stp button{width:60px;min-height:60px;font-size:28px}
+body[data-mode="front"] .stp input.f{font-size:26px}
+body[data-mode="front"] .slot-b .btn.primary{min-height:64px;font-size:21px;padding:0 34px}
+body[data-mode="front"] .tub h4{font-size:20px}
+body[data-mode="front"] .inject .hint{font-size:16px}
+body[data-mode="front"] .powder .sub{font-size:15px}
+body[data-mode="front"] .toast{top:50%;bottom:auto;transform:translate(-50%,-50%);font-size:24px;padding:22px 34px;border-radius:18px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.toast.good{background:var(--ok);color:#fff}
+.howto{margin:0;padding:12px 14px;border-radius:8px;background:var(--accent-soft);color:var(--accent);font-weight:500}
+.step{display:inline-grid;place-items:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.85em;font-weight:700;margin-right:6px}
+/* いまやること */
+.todo{background:var(--warn-soft);border-bottom:2px solid var(--warn)}
+.todo.ok{background:var(--ok-soft);border-bottom-color:var(--ok)}
+.todo.who{background:var(--accent-soft);border-bottom-color:var(--accent)}
+.todo .wrap{display:flex;flex-direction:column;gap:10px;padding-block:14px}
+.todo-h{font-size:20px;font-weight:700}
+.todo.ok .todo-h{color:var(--ok);font-size:17px}
+.todo-list{display:flex;flex-wrap:wrap;gap:10px}
+.todo-btn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:2px solid var(--warn);background:var(--surface);border-radius:12px;padding:12px 18px;min-height:64px;font-size:18px;font-weight:700;color:var(--ink)}
+.todo-btn small{font-size:14px;font-weight:500;color:var(--warn)}
+.todo-btn.l2{border-color:var(--bad)}
+.todo-btn.l2 small{color:var(--bad)}
+.todo .names button{font-size:19px;padding:12px 22px;min-height:56px}
+
+.optbox{border:1px dashed var(--line);border-radius:var(--r);display:flex;flex-direction:column;gap:8px;padding:6px}
+.opt-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;border:0;background:transparent;padding:10px 8px;font-weight:700;font-size:1em;color:var(--muted);text-align:left}
+.optset{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);padding-top:6px}
+.optset .check{padding:4px 0;font-size:14px}
+
 /* tables */
 .tw{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r)}
 table{border-collapse:collapse;width:100%;font-size:14px}
@@ -243,14 +321,14 @@ const INIT_MODE = new URLSearchParams(location.search).get("mode")||"";
 /* ===== チェック表の定義（Google ドライブの各チェック表から） ===== */
 const SH4 = ["朝","昼","夕","夜"];
 const LISTS = {
-  op: { name:"OP・CL", doc:"ops", shifts:["朝","昼","夜"], source:"OPCLチェック_両替記録表（2026.10.3改正）", sections:[
-    { id:"op", name:"OP（開店）", shifts:["朝","昼"], note:"昼スタッフも掃除後に確認", items:[
+  op: { name:"開店・閉店チェック", doc:"ops", shifts:["朝","昼","夜"], source:"OPCLチェック_両替記録表（2026.10.3改正）", sections:[
+    { id:"op", name:"開店作業（OP）", shifts:["朝","昼"], note:"昼スタッフも掃除後に確認", items:[
       "バレルサウナ稼働確認","窯場ゴミ出し（iPadにカレンダー有）","機械室スイッチON","カラン循環スイッチON（15分間）",
       "浴槽蓋・サウナのドア","女ミストサウナスイッチ","照明／扇風機／冷暖房3つスイッチ","ロウリュ／足拭き／サウナマット",
       "男女交換確認","ミストサウナ稼働確認","塩素計測／投入","カラン循環スイッチOFF（15分後）",
       "ロビー・脱衣場の椅子元に戻す","脱衣／浴場のゴミ箱","お湯ポット沸かし","鍋設置&水満タン"]},
     { id:"lunch", name:"昼休憩", shifts:["昼"], items:["レジ締め"]},
-    { id:"cl", name:"CL（閉店）", shifts:["夜"], items:[
+    { id:"cl", name:"閉店作業（CL）", shifts:["夜"], items:[
       "シャンプー／ボディソープ交換","掃除機／タブレット充電","サーバー受け皿洗浄","タップキャップ青洗浄","シャッター閉める",
       "バレルサウナ電源切る","機械室スイッチ","蓋閉め、水蛇口締め、ミスト扉開放","サウナマット回収","バレル・デッキ・バケツ洗浄",
       "椅子とコンセントを上げる","女サウナスイッチ","照明／扇風機／冷暖房3つスイッチ","忘れ物回収・明日の棚空に",
@@ -284,7 +362,9 @@ const DEFAULTS = {
   due:{ "op_朝":"06:00","op_昼":"13:00","lunch_昼":"14:00","cl_夜":"26:00",
         "duty_朝":"10:00","duty_昼":"15:00","duty_夕":"19:00","duty_夜":"24:00",
         "out_朝":"06:00","out_昼":"12:00","out_夕":"15:00","out_夜":"20:00" },
-  staff:[], emails:[]
+  staff:[], emails:[],
+  /* 必要なときだけの項目（設定で変更可）。最初は仮の分け方 */
+  optional:{round06:true,round11:true,round13:true,round14:true,round15:true,round16:true,round17:true,round18:true,round19:true,round20:true,round21:true,round22:true}
 };
 const DUE_LABELS = [["op_朝","OP（朝）"],["op_昼","OP（昼の確認）"],["lunch_昼","昼休憩 レジ締め"],["cl_夜","CL（閉店）"],
   ["duty_朝","業務チェック 朝"],["duty_昼","業務チェック 昼"],["duty_夕","業務チェック 夕"],["duty_夜","業務チェック 夜"],
@@ -295,7 +375,7 @@ const S = {
   mode:null, tab:"bath", date:null, settings:clone(DEFAULTS),
   bath:{}, ops:{}, duty:{}, money:{}, alerts:{}, shortages:[], loaded:{},
   pin:null, readonly:false,
-  staff:lsGet("staff")||"", recent:JSON.parse(lsGet("recentStaff")||"[]"),
+  staff:lsGet("staff")||"", staffShift:lsGet("staffShift")||"", recent:JSON.parse(lsGet("recentStaff")||"[]"),
   shift:{}, openSlots:new Set(), drafts:{}, confirmKey:null, overlay:null,
   soundOn:false, fd:{}, dirty:false, lastBeep:0, seenAlerts:null, evals:[], pendingAlerts:new Set(), status:"loading"
 };
@@ -326,10 +406,13 @@ function lateText(ms){const m=Math.floor(ms/60e3);return m>=60?Math.floor(m/60)+
 /* ===== 集計 ===== */
 function entryKey(sec,i,shift){return sec.id+pad(i)+"_"+shift}
 function entries(listId){return (S[LISTS[listId].doc].entries)||{}}
-function missingFor(listId,sec,shift){const e=entries(listId);return sec.items.map((t,i)=>e[entryKey(sec,i,shift)]?null:t).filter(Boolean)}
+function isOpt(sec,i){return !!(S.settings.optional||{})[sec.id+pad(i)]}
+/* 未完了の「必ずやる項目」（必要なときだけの項目は数えない） */
+function missingFor(listId,sec,shift){const e=entries(listId);return sec.items.map((t,i)=>e[entryKey(sec,i,shift)]||isOpt(sec,i)?null:t).filter(Boolean)}
+function reqCount(sec){return sec.items.filter((t,i)=>!isOpt(sec,i)).length}
 function counts(listId){
   const e=entries(listId);let total=0,done=0;
-  for(const sec of LISTS[listId].sections) for(const sh of sec.shifts) sec.items.forEach((t,i)=>{total++;if(e[entryKey(sec,i,sh)])done++});
+  for(const sec of LISTS[listId].sections) for(const sh of sec.shifts) sec.items.forEach((t,i)=>{if(isOpt(sec,i))return;total++;if(e[entryKey(sec,i,sh)])done++});
   return {total,done};
 }
 function bathSlot(s){return (S.bath.slots||{})[s]||null}
@@ -483,6 +566,7 @@ function render(lite){
   const app=$("#app"); if(!app) return;
   const active=document.activeElement;
   const typing=active&&/INPUT|TEXTAREA|SELECT/.test(active.tagName)&&$("#mainZone")&&$("#mainZone").contains(active);
+  document.body.dataset.mode=S.mode||"";
   if(!S.mode){app.innerHTML=hdr()+startView();renderOverlay();return}
   const h1=$("#hdr"),a1=$("#alarmZone"),m1=$("#mainZone");
   if(h1&&a1&&m1){
@@ -506,11 +590,11 @@ function hdr(){
   const now=new Date();
   const right = !S.mode ? "" :
     '<span class="clock num">'+(S.date?fmtDate(S.date)+"　":"")+now.getHours()+":"+pad(now.getMinutes())+'</span>'+
-    '<button class="hbtn staff" data-act="pickStaff">'+(S.mode==="front"?"担当：":"確認者：")+h(S.staff||"未選択")+'</button>'+
+    '<button class="hbtn staff" data-act="pickStaff">'+(S.mode==="front"?"担当：":"確認者：")+h(S.staff||"未選択")+(S.mode==="front"?"（交代）":"")+'</button>'+
     (S.mode==="front"?
-      '<button class="hbtn'+(S.soundOn?" on":"")+'" data-act="sound">'+(S.soundOn?"通知音 ON":"通知音を有効にする")+'</button>':"")+
-    '<button class="hbtn" data-act="settings">設定</button>'+
-    '<button class="hbtn" data-act="switch">'+(S.mode==="front"?"確認画面へ":"フロント入力へ")+'</button>';
+      '<button class="hbtn'+(S.soundOn?" on":"")+'" data-act="sound">'+(S.soundOn?"音：ON":"音を出す")+'</button>':"")+
+    (S.mode==="front"?'<button class="hbtn" data-act="help">使い方</button><button class="hbtn" data-act="more" aria-label="その他">その他</button>':
+      '<button class="hbtn" data-act="settings">設定</button><button class="hbtn" data-act="switch">フロント入力へ</button>');
   return '<header class="top" id="hdr"><div class="wrap"><div class="brand">鶴の湯<small>'+(S.mode==="front"?"フロント入力":S.mode==="manager"?"店長・副店長 確認":"業務記録")+'</small></div><div class="hdr-meta">'+right+'</div></div></header>';
 }
 function startView(){
@@ -519,11 +603,25 @@ function startView(){
     '<button data-act="mode" data-v="manager"><b>店長・副店長 確認</b><span>携帯・パソコン用。記録の確認と、塩素低下・未実施の通知の確認ができます。</span></button>'+
     '</div><p class="sub">この端末で選んだ画面は次回から自動で開きます。右上のボタンでいつでも切り替えられます。</p></main>';
 }
+function lateJa(ms){const m=Math.floor(ms/60e3);return (m>=60?Math.floor(m/60)+"時間"+(m%60?m%60+"分":""):m+"分")+"過ぎています"}
 function alarmBand(){
-  if(S.mode!=="front"||!S.evals.length) return "";
-  const chips=S.evals.slice().sort((a,b)=>b.level-a.level||a.due-b.due).map(a=>
-    '<button class="chip'+(a.level>=2?" l2":"")+'" data-act="tab" data-v="'+a.tab+'"><span class="dot"></span>'+h(a.title)+'　'+h(a.detail)+'（'+lateText(a.late)+(a.level>=2?"・店長に通知済み":"")+'）</button>').join("");
-  return '<div class="alarms"><div class="wrap"><span class="lbl">未実施</span>'+chips+'</div></div>';
+  if(S.mode!=="front"||!S.loaded.core) return "";
+  if(!S.staff){
+    const names=[...new Set([...(S.settings.staff||[]),...S.recent])];
+    return '<div class="todo who"><div class="wrap"><span class="todo-h">はじめに、あなたの名前を押してください</span>'+
+      '<div class="names">'+names.map(n=>'<button data-act="setStaff" data-v="'+h(n)+'">'+h(n)+'</button>').join("")+'<button data-act="pickStaff">名前がないとき</button></div></div></div>';
+  }
+  const shNow=defaultShift("duty");
+  if(S.staffShift!==shNow){
+    return '<div class="todo who"><div class="wrap"><span class="todo-h">シフトが変わりました。いまの担当は '+h(S.staff)+' さんですか？</span>'+
+      '<div class="names"><button class="on" data-act="sameStaff" data-v="'+shNow+'">はい、'+h(S.staff)+' です</button><button data-act="pickStaff">いいえ、交代する</button></div></div></div>';
+  }
+  const recent=S.evals.filter(a=>a.late<3*3600e3), old=S.evals.length-recent.length;
+  if(!recent.length) return '<div class="todo ok"><div class="wrap"><span class="todo-h">いま遅れている作業はありません</span>'+(old?'<span class="sub">3時間以上前の未記入が '+old+' 件あります（下のタブの赤い数字）</span>':'')+'</div></div>';
+  const all=recent.sort((a,b)=>b.due-a.due); const more=all.length-4+old;
+  const btns=all.slice(0,4).sort((a,b)=>a.due-b.due).map(a=>
+    '<button class="todo-btn'+(a.level>=2?" l2":"")+'" data-act="go" data-v="'+a.tab+'" data-key="'+a.key+'">'+h(a.title)+'がまだです<small>'+h(a.detail)+'・'+lateJa(a.late)+'</small></button>').join("");
+  return '<div class="todo"><div class="wrap"><span class="todo-h">いまやること（押すと記入する場所に移ります）</span><div class="todo-list">'+btns+'</div>'+(more>0?'<span class="sub">ほかに、前の分が '+more+' 件あります（下のタブの赤い数字）</span>':"")+'</div></div>';
 }
 function statusBlock(){
   if(S.status==="error") return '<div class="panel plain"><h2>記録を読み込めませんでした</h2><p>通信状態を確認して、ページを開き直してください。</p></div>';
@@ -532,7 +630,7 @@ function statusBlock(){
 
 /* ---- フロント ---- */
 function frontView(){
-  const tabs=[["bath","浴槽点検"],["op","OP・CL"],["duty","業務チェック"],["short","不足品報告"],["money","両替・入浴券"]];
+  const tabs=[["bath","浴槽点検"],["op","開店・閉店"],["duty","業務チェック"],["short","足りない物"],["money","両替・入浴券"]];
   const late={};S.evals.forEach(a=>late[a.tab]=(late[a.tab]||0)+1);
   let body="";
   if(S.tab==="bath") body=bathFront();
@@ -572,36 +670,48 @@ function bathFront(){
       if(INJECT(s)&&d.main_n==null){d.main_n=inj;d.radon_n=2}
       S.drafts[s]=d;
     }
-    if(!rec&&MEASURE(s)) for(const t of TUBS){const p=prevTemp(s,t.id);if(p&&d[t.id+"_t"]==null)d[t.id+"_t"]=(+p.v).toFixed(1)}
     const val=k=>d[k]==null?"":h(d[k]);
     const tubs=MEASURE(s)?'<div class="tubs">'+TUBS.map(t=>{
-      const cv=d[t.id+"_cl"];const low=cv!=null&&cv!==""&&+cv<=S.settings.threshold;
-      const p=prevTemp(s,t.id); const other=S.clOther&&S.clOther[s+"_"+t.id];
-      const cvs=clStr(cv);
-      const chips=CL_VALUES.map(v=>'<button type="button" class="'+(v==="2+"?"plus":+v<=S.settings.threshold?"lowv":"")+(cvs===v?" on":"")+'" data-act="clpick" data-slot="'+s+'" data-k="'+t.id+'_cl" data-v="'+v+'">'+v+'</button>').join("");
-      return '<div class="tub"><h4>'+t.name+'</h4>'+
-        '<div class="lbl"><span>温度（℃）</span><span>'+(p?"前回 "+h(p.v)+"（"+p.slot+"時）":"")+'</span></div>'+
-        stepper("in_"+s+"_"+t.id+"_t",'data-slot="'+s+'" data-k="'+t.id+'_t"',d[t.id+"_t"]??"","0.5",p?p.v:STD_TEMP[t.id])+
-        '<div class="lbl"><span>塩素濃度（ppm）'+(t.id==="cold"?"・任意":"")+'</span><span class="clsel">'+(cvs?'選択中 <b class="num'+(low?" low":"")+'">'+cvs+'</b>':"タップして選ぶ")+'</span></div>'+
-        '<div class="clchips" role="group" aria-label="'+t.name+' 塩素濃度">'+chips+'</div>'+
-        (other||(cvs&&!CL_VALUES.includes(cvs))?'<input class="f num'+(low?" low":"")+'" id="in_'+s+'_'+t.id+'_cl" inputmode="decimal" data-slot="'+s+'" data-k="'+t.id+'_cl" value="'+val(t.id+"_cl")+'" placeholder="例：2.5">':
-          '<div class="row"><button type="button" class="btn small ghost" data-act="clother" data-v="'+s+'_'+t.id+'">一覧にない値を入力</button>'+(cvs?'<button type="button" class="btn small ghost" data-act="clpick" data-slot="'+s+'" data-k="'+t.id+'_cl" data-v="">選択を消す</button>':"")+'</div>')+
+      const cvs=clStr(d[t.id+"_cl"]);const low=cvs!==""&&cvs!=="2+"&&+cvs<=S.settings.threshold;
+      const p=prevTemp(s,t.id); const R=TEMP_RANGE[t.id];
+      const tv=d[t.id+"_t"]; const tvs=tv==null||tv===""?"":(+tv).toFixed(1);
+      const tPos=tvs!==""?tvs:String(R[0]);
+      const clPos=cvs===""?"0.1":(cvs==="2+"?"2.1":cvs);
+      const nb=(k,dl,lab)=>'<button type="button" class="nudge" data-act="nudge" data-slot="'+s+'" data-k="'+k+'" data-d="'+dl+'" aria-label="'+lab+'">'+(dl<0?"−":"＋")+'</button>';
+      const thPct=((S.settings.threshold-0.1)/2.0*100).toFixed(1);
+      return '<div class="tub"><h4>'+t.name+(t.id==="cold"?' <small class="sub">塩素は任意</small>':'')+'</h4>'+
+        '<div class="fad-row"><span><span class="step">1</span>温度</span><span class="fad-val">'+nb(t.id+"_t",-0.5,t.name+" 温度を下げる")+'<output id="out_'+s+'_'+t.id+'_t" class="fad-v num'+(tvs===""?" unset":"")+'">'+(tvs!==""?tvs+"℃":"未入力")+'</output>'+nb(t.id+"_t",0.5,t.name+" 温度を上げる")+'</span></div>'+
+        '<input type="range" class="fader'+(tvs===""?" unset":"")+'" id="in_'+s+'_'+t.id+'_t" min="'+R[0]+'" max="'+R[1]+'" step="0.5" value="'+tPos+'" data-slot="'+s+'" data-k="'+t.id+'_t" aria-label="'+t.name+' 温度">'+
+        '<div class="fad-scale num"><span>'+R[0]+'</span><span>'+R[1]+'</span></div>'+
+        (tvs===""&&p?'<button type="button" class="same" data-act="sameTemp" data-slot="'+s+'" data-k="'+t.id+'_t" data-v="'+(+p.v).toFixed(1)+'">前回と同じ（'+(+p.v).toFixed(1)+'℃）</button>':"")+
+        '<div class="fad-row"><span><span class="step">2</span>塩素</span><span class="fad-val">'+nb(t.id+"_cl",-0.1,t.name+" 塩素を下げる")+'<output id="out_'+s+'_'+t.id+'_cl" class="fad-v num'+(cvs===""?" unset":"")+(low?" low":"")+'">'+(cvs!==""?cvs+" ppm":"未入力")+'</output>'+nb(t.id+"_cl",0.1,t.name+" 塩素を上げる")+'</span></div>'+
+        '<input type="range" class="fader cl'+(cvs===""?" unset":"")+'" style="--th:'+thPct+'%" id="in_'+s+'_'+t.id+'_cl" min="0.1" max="2.1" step="0.1" value="'+clPos+'" data-slot="'+s+'" data-k="'+t.id+'_cl" aria-label="'+t.name+' 塩素濃度">'+
+        '<div class="fad-scale num"><span>0.1</span><span class="th" style="left:'+thPct+'%">'+S.settings.threshold.toFixed(1)+'</span><span>2+</span></div>'+
         '</div>';}).join("")+'</div>':'<p class="sub">'+hourLabel(s)+'は計測不要です。塩素の投入量だけ記入してください。</p>';
     const injectBox=INJECT(s)?'<div class="inject"><span class="hint">固形塩素：主浴槽は'+(isWeekend(ds)?"土日祝":"平日")+'なので男女'+inj+'個ずつ（祝日は3個）、ラドンは濾過器へ2個。粉末は主浴槽 大さじ1（15g）・ラドン 小さじ2（10g）。</span>'+[
       ['main_n','主浴槽 固形塩素（個／男女各）'],['radon_n','ラドン 固形塩素（個）']].map(([k,n])=>'<div class="fld"><span>'+n+'</span><div class="numchips" role="group" aria-label="'+n+'">'+[0,1,2,3,4].map(c=>'<button type="button" class="'+(+d[k]===c&&d[k]!==""&&d[k]!=null?"on":"")+'" data-act="clpick" data-slot="'+s+'" data-k="'+k+'" data-v="'+c+'">'+c+'</button>').join("")+'</div></div>').join("")+
       '</div>':"";
     const lowNow=MEASURE(s)&&TUBS.some(t=>{const cv=d[t.id+"_cl"];return cv!=null&&cv!==""&&+cv<=S.settings.threshold});
-    return '<div class="slot open'+(isLate?" late":"")+'" id="slot'+s+'">'+head+'<div class="slot-b">'+tubs+injectBox+powderBox(s,d,lowNow)+
-      '<label class="fld"><span>備考</span><input class="f" id="in_'+s+'_note" data-slot="'+s+'" data-k="note" value="'+val("note")+'"></label>'+
+    return '<div class="slot open'+(isLate?" late":"")+'" id="slot'+s+'">'+head+'<div class="slot-b">'+tubs+injectBox+((lowNow||hasPowder(d)||[6,12,25].includes(s))?powderBox(s,d,lowNow):"")+
+      ((d.note||(S.noteOpen&&S.noteOpen[s]))?'<label class="fld"><span>メモ</span><input class="f" id="in_'+s+'_note" data-slot="'+s+'" data-k="note" value="'+val("note")+'"></label>':"")+
       (lowNow?'<div class="warnline">塩素濃度が '+S.settings.threshold.toFixed(1)+'ppm 以下です。保存すると店長・副店長に通知されます。'+(hasPowder(d)?"":"粉末塩素を入れて、入れた場所を上で押してください。")+'</div>':"")+
-      '<div class="row"><span class="sub">担当：'+h(S.staff||"未選択")+'</span><span class="spacer"></span><button class="btn primary" data-act="saveSlot" data-v="'+s+'"'+(S.readonly?" disabled":"")+'>'+hourLabel(s)+'の記録を保存</button></div></div></div>';
+      '<div class="row"><span class="sub">担当：'+h(S.staff||"未選択")+'</span>'+((d.note||(S.noteOpen&&S.noteOpen[s]))?"":'<button type="button" class="btn small ghost" data-act="noteOpen" data-v="'+s+'">メモを書く</button>')+'<span class="spacer"></span><button class="btn primary" data-act="saveSlot" data-v="'+s+'"'+(S.readonly?" disabled":"")+'><span class="step" style="background:#fff;color:var(--accent)">3</span>'+hourLabel(s)+'の記録を保存する</button></div></div></div>';
   }).join("");
   return '<div class="row"><h2>浴槽点検記録票</h2><span class="sub">'+fmtDate(S.date)+'　基本2時間おきに計測。'+S.settings.threshold.toFixed(1)+'ppm 以下で店長・副店長に通知</span></div><div class="slots">'+parts+'</div>';
+}
+/* フェーダーの値を下書きに入れて、表示だけ更新（ドラッグ中に画面を描き直さない） */
+function faderInput(el){
+  const sl=el.dataset.slot,k=el.dataset.k,isCl=/_cl$/.test(k);
+  let v=el.value; v=isCl&&+v>2.05?"2+":(+v).toFixed(1);
+  (S.drafts[sl]=S.drafts[sl]||{})[k]=v; el.classList.remove("unset");
+  const out=document.getElementById("out_"+sl+"_"+k);
+  if(out){const lo=isCl&&v!=="2+"&&+v<=S.settings.threshold;out.textContent=isCl?v+" ppm":v+"℃";out.classList.remove("unset");out.classList.toggle("low",lo)}
 }
 /* タップ入力の部品 */
 const CL_VALUES=[];for(let v=1;v<=20;v++)CL_VALUES.push((v/10).toFixed(1));CL_VALUES.push("2+");
 const clStr=v=>v==null||v===""?"":String(v)==="2+"?"2+":(+v).toFixed(1);
 const STD_TEMP={main:"42.0",radon:"40.0",cold:"17.0"};
+const TEMP_RANGE={main:[36,46],radon:[34,44],cold:[10,24]};
 function stepper(id,attrs,value,step,base,extraBtns){
   const dec=String(step).includes(".")?String(step).split(".")[1].length:0;
   const big=extraBtns?'<button type="button" class="wide" data-act="stp" data-d="-'+extraBtns+'" aria-label="'+extraBtns+'減らす">−'+extraBtns+'</button>':"";
@@ -622,7 +732,7 @@ function powderLabel(r){
 function powderBox(s,d,lowNow){
   const rows=PW.map(([id,n,amt])=>'<div class="pw-row"><span class="pw-n">'+n+'<small>'+amt+'</small></span><div class="numchips" role="group" aria-label="'+n+' 粉末塩素">'+
     SIDES.map(([sd,sn])=>{const k="pw_"+id+"_"+sd;return '<button type="button" class="'+(d[k]?"on":"")+'" data-act="pwtoggle" data-slot="'+s+'" data-k="'+k+'" aria-pressed="'+(!!d[k])+'">'+sn+'</button>'}).join("")+'</div></div>').join("");
-  return '<div class="powder'+(lowNow&&!hasPowder(d)?" need":"")+'"><div class="lbl"><b style="color:var(--ink);font-size:14px">粉末塩素（'+S.settings.threshold.toFixed(1)+'ppm を下回ったら裏から投入）</b><span>入れた所を押す</span></div>'+rows+
+  return '<div class="powder'+(lowNow&&!hasPowder(d)?" need":"")+'"><div class="lbl"><b style="color:var(--ink);font-size:1em">粉末塩素（'+S.settings.threshold.toFixed(1)+'ppm を下回ったら裏から投入）</b><span>入れた所を押す</span></div>'+rows+
     '<span class="sub">男湯・女湯それぞれに入れるのがベストです。男性スタッフだけのときは男湯だけで OK。女性スタッフのときは男湯にも入れてください。</span></div>';
 }
 function prevTemp(s,tub){
@@ -646,23 +756,31 @@ function checkFront(listId){
     const dk=sec.dueKey?sec.dueKey+"_"+sh:listId==="duty"?"duty_"+sh:sec.id+"_"+sh;
     const due=dueAt(dk); const isLate=lateKeys.has(dk);
     const miss=missingFor(listId,sec,sh).length;
-    const items=sec.items.map((t,i)=>{
+    const btn=(t,i,opt)=>{
       const k=entryKey(sec,i,sh); const r=e[k];
       const conf=S.confirmKey===listId+"|"+k;
-      return '<button class="item'+(r?" done":"")+(conf?" confirm":"")+(!r&&isLate?" late":"")+'" data-act="toggle" data-list="'+listId+'" data-v="'+k+'" aria-pressed="'+(!!r)+'">'+
+      return '<button class="item'+(r?" done":"")+(conf?" confirm":"")+(!r&&isLate&&!opt?" late":"")+'" data-act="toggle" data-list="'+listId+'" data-v="'+k+'" aria-pressed="'+(!!r)+'">'+
         '<span class="box"></span><span class="t">'+h(t)+'</span><span class="who">'+(conf?"もう一度押すと取り消し":r?h(r.by)+" "+fmtT(r.at):"")+'</span></button>';
-    }).join("");
-    const pct=Math.round((sec.items.length-miss)/sec.items.length*100);
-    return '<section class="sec"><div class="sec-h"><h3>'+h(sec.name)+(sec.id==="op"&&sh==="昼"?"　昼の確認":"")+'</h3><span class="sub num">'+(sec.items.length-miss)+' / '+sec.items.length+'</span><div class="progress"><i style="width:'+pct+'%"></i></div>'+
+    };
+    const items=sec.items.map((t,i)=>isOpt(sec,i)?"":btn(t,i,false)).join("");
+    const optIdx=sec.items.map((t,i)=>i).filter(i=>isOpt(sec,i));
+    const optDone=optIdx.filter(i=>e[entryKey(sec,i,sh)]).length;
+    const ok=S.optOpen&&S.optOpen[listId+sec.id+sh];
+    const optBox=optIdx.length?'<div class="optbox"><button type="button" class="opt-h" data-act="optToggle" data-v="'+listId+sec.id+sh+'" aria-expanded="'+(!!ok)+'"><span>'+(ok?"▼":"▶")+' 必要なときだけの作業（'+optIdx.length+'件'+(optDone?'・'+optDone+'件済み':'')+'）</span><span class="sub">'+(ok?"閉じる":"押すと開きます")+'</span></button>'+
+      (ok?'<div class="items">'+optIdx.map(i=>btn(sec.items[i],i,true)).join("")+'</div>':"")+'</div>':"";
+    const req=reqCount(sec);
+    const pct=req?Math.round((req-miss)/req*100):100;
+    return '<section class="sec"><div class="sec-h"><h3>'+h(sec.name)+(sec.id==="op"&&sh==="昼"?"　昼の確認":"")+'</h3><span class="sub num">'+(req-miss)+' / '+req+'</span><div class="progress"><i style="width:'+pct+'%"></i></div>'+
       (due!=null?'<span class="due'+(isLate?" late":"")+'">期限 '+h(S.settings.due[dk])+(isLate?"（超過）":"")+'</span>':"")+'</div>'+
-      (sec.note||sec.shiftNotes?'<p class="sub" style="margin:0">'+h(sec.shiftNotes?sh+"："+sec.shiftNotes[sh]:sec.note)+'</p>':"")+'<div class="items">'+items+'</div></section>';
+      (sec.note||sec.shiftNotes?'<p class="sub" style="margin:0">'+h(sec.shiftNotes?sh+"："+sec.shiftNotes[sh]:sec.note)+'</p>':"")+(items?'<div class="items">'+items+'</div>':"")+optBox+'</section>';
   }).join("");
-  return '<div class="row"><h2>'+L.name+'</h2><span class="sub">'+fmtDate(S.date)+'</span><span class="spacer"></span>'+seg+'</div>'+secs;
+  return '<div class="row"><h2>'+L.name+'</h2><span class="sub">'+fmtDate(S.date)+'</span><span class="spacer"></span>'+seg+'</div>'+
+    '<p class="howto">終わった作業を押すと緑になります。まちがえたときは、もう一度押すと取り消せます。右上で、いまのシフトを選んでください。</p>'+secs;
 }
 function shortFront(){
   const today=S.shortages.filter(x=>x.date===S.date);
-  return '<div class="row"><h2>不足品報告表</h2><span class="sub">足りない備品・消耗品を報告すると、店長・副店長の画面に並びます</span></div>'+
-    '<form class="grid4" data-form="short"><label class="fld" style="grid-column:span 2"><span>不足品名</span><input class="f" id="sh_item" name="item" required placeholder="例：シャンプー詰め替え"></label>'+
+  return '<div class="row"><h2>足りない物の報告</h2><span class="sub">足りない備品・消耗品を書いて「報告する」を押すと、店長・副店長に伝わります</span></div>'+
+    '<form class="grid4" data-form="short"><label class="fld" style="grid-column:span 2"><span>足りない物</span><input class="f" id="sh_item" name="item" required placeholder="例：シャンプー詰め替え"></label>'+
     '<label class="fld"><span>残量</span><input class="f" id="sh_remain" name="remain" placeholder="例：残り1本"></label>'+
     '<label class="fld"><span>備考</span><input class="f" id="sh_note" name="note"></label>'+
     '<div class="row"><button class="btn primary" type="submit"'+(S.readonly?" disabled":"")+'>報告する</button></div></form>'+
@@ -752,10 +870,12 @@ function checkTable(listId){
   for(const sec of L.sections){
     body+='<tr><th colspan="'+(L.shifts.length+1)+'" style="background:var(--accent-soft);color:var(--accent)">'+h(sec.name)+'</th></tr>';
     sec.items.forEach((t,i)=>{
-      body+='<tr><td class="item-name">'+h(t)+'</td>'+L.shifts.map(sh=>{
+      const opt=isOpt(sec,i);
+      body+='<tr><td class="item-name">'+h(t)+(opt?' <span class="pill mute">必要時</span>':'')+'</td>'+L.shifts.map(sh=>{
         if(!sec.shifts.includes(sh)) return '<td class="c dim">　</td>';
         const r=e[entryKey(sec,i,sh)];
         if(r) return '<td class="c done">'+h(r.by)+' <span class="num">'+fmtT(r.at)+'</span></td>';
+        if(opt) return '<td class="c dim">—</td>';
         const dk=sec.dueKey?sec.dueKey+"_"+sh:listId==="duty"?"duty_"+sh:sec.id+"_"+sh;
         const past=!isToday||lateKeys.has(dk);
         return '<td class="c '+(past&&(!isToday||lateKeys.has(dk))?"miss":"dim")+'">'+(past?"未":"—")+'</td>';
@@ -767,6 +887,22 @@ function checkTable(listId){
 
 /* ---- オーバーレイ ---- */
 function overlayView(){
+  if(S.overlay==="more"){
+    return '<div class="overlay" data-act="closeOv"><div class="sheet" role="dialog" aria-label="その他"><h2>その他</h2>'+
+      '<p class="sub" style="margin:0">ふだんは使いません。店長・副店長が使うボタンです。</p>'+
+      '<button class="btn" data-act="switch">店長・副店長の確認画面へ</button><button class="btn" data-act="settings">設定（管理PINが必要）</button>'+
+      '<div class="row"><span class="spacer"></span><button class="btn primary" data-act="closeOv">閉じる</button></div></div></div>';
+  }
+  if(S.overlay==="help"){
+    const st=(n,t,d)=>'<div style="display:flex;gap:12px;align-items:flex-start"><span class="step" style="flex:none;font-size:18px">'+n+'</span><div><b>'+t+'</b><div class="sub">'+d+'</div></div></div>';
+    return '<div class="overlay" data-act="closeOv"><div class="sheet" role="dialog" aria-label="使い方"><h2>使い方</h2>'+
+      st(1,"名前を押す","はじめに上の「担当」で自分の名前を押します。交代したら押し直します。")+
+      st(2,"「いまやること」を押す","黄色い所に、遅れている作業が出ます。押すと、記入する場所に移ります。")+
+      st(3,"浴槽点検","温度と塩素は、丸いつまみを左右に動かします。細かく合わせるときは「−」「＋」を押します。最後に青い「保存する」を押します。")+
+      st(4,"チェック表","終わった作業を押すと緑になります。まちがえたら、もう一度押すと取り消せます。")+
+      st(5,"困ったとき","画面を閉じて開き直してください。直らないときは店長・副店長に連絡してください。")+
+      '<div class="row"><span class="spacer"></span><button class="btn primary" data-act="closeOv">わかった</button></div></div></div>';
+  }
   if(S.overlay==="staff"){
     const names=[...new Set([...(S.settings.staff||[]),...S.recent])];
     return '<div class="overlay" data-act="closeOv"><div class="sheet" role="dialog" aria-label="担当者を選ぶ"><h2>担当者を選んでください</h2>'+
@@ -789,6 +925,8 @@ function overlayView(){
       '<div class="grid4"><label class="fld"><span>清掃時間 開始</span><input class="f num" id="st_cf" name="cleanFrom" value="'+h(st.cleanFrom)+'"></label><label class="fld"><span>清掃時間 終了</span><input class="f num" id="st_ct" name="cleanTo" value="'+h(st.cleanTo)+'"></label></div>'+
       '<h3>作業の期限（24時以降は 25:00 のように入力）</h3><div class="grid4">'+DUE_LABELS.map(([k,n])=>'<label class="fld"><span>'+n+'</span><input class="f num" id="st_due_'+k+'" name="due_'+k+'" value="'+h(st.due[k])+'" placeholder="HH:MM"></label>').join("")+'</div>'+
       '<label class="check"><input type="checkbox" id="st_duty" name="dutyAlarm"'+(st.dutyAlarm?" checked":"")+'>業務チェック（外回り以外）の未完了も画面に表示する</label>'+
+      '<h3>チェック項目の分け方</h3><p class="sub" style="margin:0">チェックを入れた項目は「必要なときだけの作業」になり、折りたたまれます。やらなくても遅れの表示には入りません。</p>'+
+      Object.values(LISTS).map(L=>L.sections.map(sec=>'<div class="optset"><b>'+h(sec.name)+'</b>'+sec.items.map((t,i)=>'<label class="check"><input type="checkbox" id="st_opt_'+sec.id+pad(i)+'" name="opt_'+sec.id+pad(i)+'"'+(isOpt(sec,i)?" checked":"")+'>'+h(t)+'</label>').join("")+'</div>').join("")).join("")+
       '<label class="check"><input type="checkbox" id="st_tue" name="closedTue"'+(st.closedDays.includes(2)?" checked":"")+'>火曜は定休日（未実施の表示を止める）</label>'+
       '<label class="fld"><span>スタッフの名前（1行に1人）</span><textarea class="f" id="st_staff" name="staff" rows="4">'+h((st.staff||[]).join("\n"))+'</textarea></label>'+
       '<h3>メール通知</h3><p class="sub" style="margin:0">残留塩素が基準値以下で記入されると、すぐに下のアドレスへメールが届きます。アプリを開いていない人にも届きます。</p>'+
@@ -801,11 +939,12 @@ function overlayView(){
 
 /* ===== 操作 ===== */
 let toastTimer=null;
-function toast(msg){
-  let t=$("#toast"); if(!t){t=document.createElement("div");t.id="toast";t.className="toast";t.setAttribute("role","status");document.body.appendChild(t)}
-  t.textContent=msg;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.hidden=true},3500);
+function toast(msg,good){
+  let t=$("#toast"); if(!t){t=document.createElement("div");t.id="toast";t.setAttribute("role","status");document.body.appendChild(t)}
+  t.className="toast"+(good?" good":"");
+  t.textContent=msg;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.hidden=true},good?2500:4500);
 }
-function needStaff(){if(!S.staff){S.overlay="staff";render();toast("先に担当者を選んでください");return true}return false}
+function needStaff(){if(!S.staff){S.overlay="staff";render();toast("先に、あなたの名前を選んでください");return true}return false}
 function setMode(m){S.mode=m;lsSet("mode",m);try{history.replaceState(null,"","?mode="+m)}catch(e){}if(m==="front"&&S.date!==bizDate())subscribeDate(bizDate());S.seenAlerts=null;noticeNewAlerts();tick(false)}
 
 document.addEventListener("click",async ev=>{
@@ -814,10 +953,21 @@ document.addEventListener("click",async ev=>{
   if(act==="closeOv"&&el.classList.contains("overlay")&&ev.target!==el) return;
   switch(act){
     case "mode": setMode(v); break;
-    case "switch": setMode(S.mode==="front"?"manager":"front"); break;
+    case "switch": S.overlay=null; setMode(S.mode==="front"?"manager":"front"); break;
     case "tab": S.tab=v; render(); window.scrollTo(0,0); break;
+    case "go": {
+      S.tab=v; const k=el.dataset.key||"";
+      if(k.startsWith("bath_")){const sl=+k.slice(5);S.openSlots.add(sl);S.openSlots.delete(-sl)}
+      else if(/_(朝|昼|夕|夜)$/.test(k)){S.shift[v]=k.slice(-1)}
+      render();
+      const target=k.startsWith("bath_")?$("#slot"+k.slice(5)):$(".sec");
+      setTimeout(()=>{(target||document.body).scrollIntoView({behavior:"smooth",block:"start"})},60);
+      break;
+    }
     case "sound": enableSound(); break;
     case "pickStaff": S.overlay="staff"; render(); break;
+    case "help": S.overlay="help"; render(); break;
+    case "more": S.overlay="more"; render(); break;
     case "settings": S.overlay=S.pin!=null?"settings":"pin"; render(); setTimeout(()=>{const i=$("#pinIn");if(i)i.focus()},50); break;
     case "closeOv": S.overlay=null; render(); break;
     case "setStaff": chooseStaff(v); break;
@@ -837,6 +987,21 @@ document.addEventListener("click",async ev=>{
       render(); break;
     }
     case "pwtoggle": {const sl=el.dataset.slot;const d=(S.drafts[sl]=S.drafts[sl]||{});d[el.dataset.k]=!d[el.dataset.k];render();break;}
+    case "nudge": {
+      const sl=el.dataset.slot,k=el.dataset.k,isCl=/_cl$/.test(k),dl=+el.dataset.d;
+      const d=(S.drafts[sl]=S.drafts[sl]||{}); let cur=d[k];
+      if(cur==null||cur===""){
+        const tub=k.split("_")[0]; const p=isCl?null:prevTemp(+sl,tub);
+        cur=isCl?1.0:(p?+p.v:+STD_TEMP[tub]);
+      } else { cur=(String(cur)==="2+"?2.1:+cur)+dl; }
+      if(isCl){cur=Math.min(2.1,Math.max(0.1,Math.round(cur*10)/10));d[k]=cur>2.05?"2+":cur.toFixed(1)}
+      else{const R=TEMP_RANGE[k.split("_")[0]];cur=Math.min(R[1]+10,Math.max(0,Math.round(cur*2)/2));d[k]=cur.toFixed(1)}
+      render(); break;
+    }
+    case "sameTemp": {const sl=el.dataset.slot;(S.drafts[sl]=S.drafts[sl]||{})[el.dataset.k]=v;render();break;}
+    case "sameStaff": S.staffShift=v; lsSet("staffShift",v); render(); toast("担当："+S.staff+" さん",true); break;
+    case "optToggle": S.optOpen=S.optOpen||{}; S.optOpen[v]=!S.optOpen[v]; render(); break;
+    case "noteOpen": S.noteOpen=S.noteOpen||{}; S.noteOpen[v]=true; render(); setTimeout(()=>{const i=$("#in_"+v+"_note");if(i)i.focus()},50); break;
     case "clother": S.clOther=S.clOther||{}; S.clOther[v]=true; render(); setTimeout(()=>{const i=$("#in_"+v+"_cl");if(i)i.focus()},50); break;
     case "toggle": toggleItem(el.dataset.list,v); break;
     case "ack": ackAlert(v); break;
@@ -853,11 +1018,13 @@ document.addEventListener("click",async ev=>{
 });
 document.addEventListener("change",ev=>{
   const el=ev.target;
+  if(el.classList&&el.classList.contains("fader")){faderInput(el);el.blur();render();return}
   if(el.id==="mgrDate"&&el.value){subscribeDate(el.value>bizDate()?bizDate():el.value);return}
   if(el.dataset&&el.dataset.slot&&el.type==="checkbox"){const s=el.dataset.slot;(S.drafts[s]=S.drafts[s]||{})[el.dataset.k]=el.checked}
 });
 document.addEventListener("input",ev=>{
   const el=ev.target;
+  if(el.classList&&el.classList.contains("fader")){ faderInput(el); return; }
   if(el.dataset&&el.dataset.slot&&el.type!=="checkbox"){
     const s=el.dataset.slot;(S.drafts[s]=S.drafts[s]||{})[el.dataset.k]=el.value;
     if(/_cl$/.test(el.dataset.k)){const low=el.value!==""&&+el.value<=S.settings.threshold;el.classList.toggle("low",low)}
@@ -882,22 +1049,22 @@ document.addEventListener("submit",async ev=>{
   if(needStaff()) return;
   if(kind==="short"){
     const item=f.item.value.trim(); if(!item) return;
-    try{S.shortages=await api("addShortage",S.date,S.staff,item,f.remain.value.trim(),f.note.value.trim());clearForm(f);render();toast("不足品を報告しました")}catch(e){saveErr(e)}
+    try{S.shortages=await api("addShortage",S.date,S.staff,item,f.remain.value.trim(),f.note.value.trim());clearForm(f);render();toast("報告しました",true)}catch(e){saveErr(e)}
   }
   if(kind==="tickets"){
     const t={by:S.staff,at:Date.now()};TICKETS.forEach(([k])=>{const x=f[k].value.trim();t[k]=x===""?null:+x});
-    try{await writeMerge("money/"+S.date,{tickets:t});[...f.elements].forEach(el=>{if(el.id)delete S.fd[el.id]});toast("入浴券を保存しました")}catch(e){saveErr(e)}
+    try{await writeMerge("money/"+S.date,{tickets:t});[...f.elements].forEach(el=>{if(el.id)delete S.fd[el.id]});toast("入浴券を保存しました",true)}catch(e){saveErr(e)}
   }
   if(kind==="exchange"){
     const g=p=>{const o={};DENOMS.forEach(([d])=>{const x=+f[p+"_"+d].value;if(x)o[d]=x});return o};
     const amount=DENOMS.reduce((s,[d])=>s+(+f["in_"+d].value||0)*(+d),0);
     if(!amount){toast("入金の枚数を入れてください");return}
     const id="x"+Date.now().toString(36);
-    try{await writeMerge("money/"+S.date,{exchanges:{[id]:{by:S.staff,amount,in:g("in"),out:g("out"),note:f.note.value.trim(),at:Date.now()}}});clearForm(f);$("#exCheck").textContent="記録しました";toast("両替を記録しました")}catch(e){saveErr(e)}
+    try{await writeMerge("money/"+S.date,{exchanges:{[id]:{by:S.staff,amount,in:g("in"),out:g("out"),note:f.note.value.trim(),at:Date.now()}}});clearForm(f);$("#exCheck").textContent="記録しました";toast("両替を記録しました",true)}catch(e){saveErr(e)}
   }
 });
 function chooseStaff(n){
-  S.staff=n;lsSet("staff",n);S.recent=[n,...S.recent.filter(x=>x!==n)].slice(0,12);lsSet("recentStaff",JSON.stringify(S.recent));
+  S.staff=n;lsSet("staff",n);S.staffShift=defaultShift("duty");lsSet("staffShift",S.staffShift);S.recent=[n,...S.recent.filter(x=>x!==n)].slice(0,12);lsSet("recentStaff",JSON.stringify(S.recent));
   S.overlay=null;render();toast("担当："+n);
 }
 async function toggleItem(listId,key){
@@ -920,14 +1087,19 @@ async function saveSlot(s){
   if(INJECT(s)){rec.main_n=num(d.main_n);rec.radon_n=num(d.radon_n)}
   PW.forEach(([id])=>SIDES.forEach(([sd])=>{const k="pw_"+id+"_"+sd;rec[k]=!!d[k]}));
   rec.powder=hasPowder(rec); rec.note=(d.note||"").trim();
-  if(MEASURE(s)&&rec.main_cl==null&&rec.radon_cl==null&&rec.main_t==null){toast("主浴槽かラドンの値を入力してください");return}
+  if(MEASURE(s)){
+    const miss=[];
+    if(rec.main_t==null)miss.push("主浴槽の温度");if(rec.main_cl==null)miss.push("主浴槽の塩素");
+    if(rec.radon_t==null)miss.push("ラドンの温度");if(rec.radon_cl==null)miss.push("ラドンの塩素");
+    if(miss.length){toast("まだ入っていません："+miss.join("・"));return}
+  }
   const btn=document.querySelector('[data-act="saveSlot"][data-v="'+s+'"]'); if(btn){btn.disabled=true;btn.textContent="保存中…"}
   try{
     const r=await api("saveBath",S.date,s,rec);
     pollSeq++; S.bath=r.doc; if(r.alerts) S.alerts=r.alerts;
     delete S.drafts[s]; S.openSlots.delete(s); S.openSlots.add(-s);
     if(r.lows) toast("保存しました。塩素低下を店長・副店長にメールで通知しました");
-    else toast(hourLabel(s)+"の記録を保存しました");
+    else toast(hourLabel(s)+"の記録を保存しました",true);
     onData();
   }catch(e){saveErr(e)}
 }
@@ -942,7 +1114,8 @@ async function saveSettings(f){
   const th=+f.threshold.value; if(!isFinite(th)||th<=0){toast("塩素の基準値を正しく入力してください");return}
   if(parseHM(f.cleanFrom.value)==null||parseHM(f.cleanTo.value)==null){toast("清掃時間を HH:MM で入力してください");return}
   const newPin=f.newPin.value.trim();
-  const data={cleanFrom:f.cleanFrom.value.trim(),cleanTo:f.cleanTo.value.trim(),threshold:th,grace:Math.max(0,+f.grace.value||0),due,dutyAlarm:f.dutyAlarm.checked,closedDays:f.closedTue.checked?[2]:[],
+  const optional={};f.querySelectorAll('input[name^="opt_"]').forEach(x=>{if(x.checked)optional[x.name.slice(4)]=true});
+  const data={optional,cleanFrom:f.cleanFrom.value.trim(),cleanTo:f.cleanTo.value.trim(),threshold:th,grace:Math.max(0,+f.grace.value||0),due,dutyAlarm:f.dutyAlarm.checked,closedDays:f.closedTue.checked?[2]:[],
     staff:f.staff.value.split(/\n/).map(x=>x.trim()).filter(Boolean),emails:f.emails.value.split(/[\s,、]+/).filter(Boolean)};
   try{const d=await api("saveSettings",S.pin,data,newPin||null);if(newPin)S.pin=newPin;
     S.settings=Object.assign(clone(DEFAULTS),d,{due:Object.assign({},DEFAULTS.due,d.due||{})});S.overlay=null;render();toast("設定を保存しました")}
