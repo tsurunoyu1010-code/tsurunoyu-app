@@ -245,6 +245,10 @@ body[data-mode="front"] .toast{top:50%;bottom:auto;transform:translate(-50%,-50%
 .optset{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line);padding-top:6px}
 .optset .check{padding:4px 0;font-size:14px}
 
+.item.partial{background:var(--warn-soft);border-color:var(--warn)}
+.item .box b{font-size:18px;color:var(--warn)}
+.item.auto{cursor:default}
+.autonote{display:block;font-size:12px;font-weight:500;color:var(--muted)}
 .item-wrap{display:flex;flex-direction:column;gap:4px;min-width:0}
 .again-row{display:flex;justify-content:flex-end;gap:6px}
 .again{border:1px dashed var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700;min-height:32px}
@@ -334,7 +338,7 @@ const LISTS = {
       "ロビー・脱衣場の椅子元に戻す","脱衣／浴場のゴミ箱","お湯ポット沸かし","鍋設置&水満タン"]},
     { id:"lunch", name:"昼休憩", shifts:["昼"], items:["レジ締め"]},
     { id:"cl", name:"閉店作業（CL）", shifts:["夜"], items:[
-      "シャンプー／ボディソープ交換","掃除機／タブレット充電","サーバー受け皿洗浄","タップキャップ青洗浄","シャッター閉める",
+      "シャンプー／ボディソープ交換","掃除機／タブレット充電","サーバー受け皿洗浄",{id:"round17",t:"ビールサワーサーバー水通し洗浄"},"タップキャップ青洗浄","シャッター閉める",
       "バレルサウナ電源切る","機械室スイッチ","蓋閉め、水蛇口締め、ミスト扉開放","サウナマット回収","バレル・デッキ・バケツ洗浄",
       "椅子とコンセントを上げる","女サウナスイッチ","照明／扇風機／冷暖房3つスイッチ","忘れ物回収・明日の棚空に",
       "鍋を取り出して冷却（水風呂前に置く）","男女交換作業","バレル扉解放","パイプユニッシュ排水溝に","高濃度塩素洗浄",
@@ -342,16 +346,20 @@ const LISTS = {
   ]},
   duty: { name:"業務チェック", doc:"duty", shifts:SH4, source:"業務チェック&不足品報告表", sections:[
     { id:"start", name:"出勤時", shifts:SH4, items:["連絡・infoノートチェック"]},
-    { id:"outside", name:"外回りの掃き掃除（交代時）", shifts:SH4, dueKey:"out", items:["外回りの掃き掃除"],
+    { id:"outside", name:"外回りの掃き掃除（交代時）", shifts:SH4, dueKey:"out", items:["外回りの掃き掃除",{id:"round19",t:"ランドリーゴミ捨て"}],
       shiftNotes:{"朝":"オープン（6:00）前に","昼":"浴場清掃・ロビー清掃が終わってから、オープン（12:00）前に","夕":"出勤したら引き継ぎのタイミングで","夜":"出勤したら引き継ぎのタイミングで"}},
+    /* ID は前の版の番号をそのまま使う（過去の記録とずれないように）。times＝やる回数、auto＝浴槽点検と連動、shifts＝そのシフトだけ */
     { id:"round", name:"引継前（巡回・随時）", shifts:SH4, items:[
-      "見回り①／コロコロ剥がす","見回り②／コロコロ剥がす","見回り③／コロコロ剥がす","塩素計測","サウナ／足拭きマット交換",
-      "サウナアロマ&鍋水補充","雑巾で扇風機拭く","ロビーテーブルアルコール拭き","ゴミをゴミ庫に","リストバンド不足確認＆補充",
-      "ドリンク不足確認＆表記入","氷を作る","ドリンク、アメニティ補充","空瓶整理","洗濯","フロントのブロワー",
-      "玄関付近のはき掃除","ビールサワーサーバー水通し洗浄","水光熱費チェックシート記入","ランドリーゴミ捨て",
-      "洗濯・乾燥機拭き掃除","玄関掃き掃除","ランドリー掃き掃除"]},
+      {id:"round00",t:"見回り／コロコロ剥がす",times:3},
+      {id:"round03",t:"塩素計測",auto:"bath"},
+      {id:"round04",t:"サウナ／足拭きマット交換"},{id:"round05",t:"サウナアロマ&鍋水補充"},{id:"round06",t:"雑巾で扇風機拭く"},
+      {id:"round07",t:"ロビーテーブルアルコール拭き"},{id:"round08",t:"ゴミをゴミ庫に"},{id:"round09",t:"リストバンド不足確認＆補充"},
+      {id:"round10",t:"ドリンク不足確認＆表記入"},{id:"round11",t:"氷を作る"},{id:"round12",t:"ドリンク、アメニティ補充"},
+      {id:"round13",t:"空瓶整理"},{id:"round14",t:"洗濯"},{id:"round15",t:"フロントのブロワー"},{id:"round16",t:"玄関付近のはき掃除"},
+      {id:"round18",t:"水光熱費チェックシート記入",shifts:["昼"]},{id:"round22",t:"ランドリー掃き掃除"}]},
     { id:"handover", name:"引継※（重め・交代時）", shifts:SH4, note:"シフト最後の30分（次の人とかぶってる時間）で実施", items:[
-      "トイレ掃除","エアレジ点検","乾燥機フィルター掃除"]}
+      "トイレ掃除","エアレジ点検","乾燥機フィルター掃除",
+      {id:"handover03",t:"主浴槽の加水（オーバーフロー）",note:"タイマーを使って5分間"}]}
   ]}
 };
 /* 浴槽点検記録票（残留塩素濃度記録票_0921）＋ 塩素管理の徹底_20260921 */
@@ -367,9 +375,7 @@ const DEFAULTS = {
   due:{ "op_朝":"06:00","op_昼":"13:00","lunch_昼":"14:00","cl_夜":"26:00",
         "duty_朝":"10:00","duty_昼":"15:00","duty_夕":"19:00","duty_夜":"24:00",
         "out_朝":"06:00","out_昼":"12:00","out_夕":"15:00","out_夜":"20:00" },
-  staff:[], emails:[],
-  /* 必要なときだけの項目（設定で変更可）。最初は仮の分け方 */
-  optional:{round06:true,round11:true,round13:true,round14:true,round15:true,round16:true,round17:true,round18:true,round19:true,round20:true,round21:true,round22:true}
+  staff:[], emails:[]
 };
 const DUE_LABELS = [["op_朝","OP（朝）"],["op_昼","OP（昼の確認）"],["lunch_昼","昼休憩 レジ締め"],["cl_夜","CL（閉店）"],
   ["duty_朝","業務チェック 朝"],["duty_昼","業務チェック 昼"],["duty_夕","業務チェック 夕"],["duty_夜","業務チェック 夜"],
@@ -409,15 +415,26 @@ function dueAt(key){const m=parseHM(S.settings.due[key]);return m==null?null:atM
 function lateText(ms){const m=Math.floor(ms/60e3);return m>=60?Math.floor(m/60)+"時間"+(m%60?m%60+"分":"")+"超過":m+"分超過"}
 
 /* ===== 集計 ===== */
-function entryKey(sec,i,shift){return sec.id+pad(i)+"_"+shift}
+/* 項目を {id,t,...} にそろえる。文字だけの項目は「区分ID＋文字項目の順番」を ID にする（前の版の記録と合わせるため） */
+const ITEMS={};
+for(const L of Object.values(LISTS)) for(const sec of L.sections){let n=0;sec.items=sec.items.map(it=>typeof it==="string"?{id:sec.id+pad(n++),t:it}:it);sec.items.forEach(it=>ITEMS[it.id]=it)}
+function itemOf(key){return ITEMS[key.slice(0,key.lastIndexOf("_"))]}
+function itemsFor(sec,sh){return sec.items.filter(it=>(it.shifts||sec.shifts).includes(sh))}
+function ekey(it,sh){return it.id+"_"+sh}
 function entries(listId){return (S[LISTS[listId].doc].entries)||{}}
-function isOpt(sec,i){return !!(S.settings.optional||{})[sec.id+pad(i)]}
-/* 未完了の「必ずやる項目」（必要なときだけの項目は数えない） */
-function missingFor(listId,sec,shift){const e=entries(listId);return sec.items.map((t,i)=>e[entryKey(sec,i,shift)]||isOpt(sec,i)?null:t).filter(Boolean)}
-function reqCount(sec){return sec.items.filter((t,i)=>!isOpt(sec,i)).length}
+function manCount(r){return r?1+(Array.isArray(r.extra)?r.extra.length:0):0}
+/* 業務チェックのシフトの時間帯（営業日0時からの分）：前のシフトの期限〜このシフトの期限 */
+function shiftWindow(sh){const i=SH4.indexOf(sh),m=k=>parseHM(S.settings.due["duty_"+k]);return [i===0?5*60:m(SH4[i-1]),i===3?29*60:m(sh)]}
+function inWin(sl,sh){const [a,b]=shiftWindow(sh);return sl*60>a&&sl*60<=b}
+function autoBathCount(sh){return BATH_SLOTS.filter(sl=>MEASURE(sl)&&inWin(sl,sh)&&bathSlot(sl)&&(bathSlot(sl).main_cl!=null||bathSlot(sl).radon_cl!=null)).length}
+function autoBathTarget(sh){const cf=parseHM(S.settings.cleanFrom),ct=parseHM(S.settings.cleanTo);return BATH_SLOTS.filter(sl=>MEASURE(sl)&&inWin(sl,sh)&&!(cf!=null&&ct!=null&&sl*60>=cf&&sl*60<ct)).length}
+function isDone(listId,it,sh){return it.auto?true:manCount(entries(listId)[ekey(it,sh)])>=(it.times||1)}
+/* 未完了の項目（浴槽点検と連動する項目は浴槽点検のほうで数えるので入れない） */
+function missingFor(listId,sec,shift){return itemsFor(sec,shift).filter(it=>!it.auto&&!isDone(listId,it,shift)).map(it=>it.t)}
+function reqCount(sec,sh){return itemsFor(sec,sh).filter(it=>!it.auto).length}
 function counts(listId){
   const e=entries(listId);let total=0,done=0;
-  for(const sec of LISTS[listId].sections) for(const sh of sec.shifts) sec.items.forEach((t,i)=>{if(isOpt(sec,i))return;total++;if(e[entryKey(sec,i,sh)])done++});
+  for(const sec of LISTS[listId].sections) for(const sh of sec.shifts) itemsFor(sec,sh).forEach(it=>{if(it.auto)return;total++;if(isDone(listId,it,sh))done++});
   return {total,done};
 }
 function bathSlot(s){return (S.bath.slots||{})[s]||null}
@@ -761,27 +778,30 @@ function checkFront(listId){
     const dk=sec.dueKey?sec.dueKey+"_"+sh:listId==="duty"?"duty_"+sh:sec.id+"_"+sh;
     const due=dueAt(dk); const isLate=lateKeys.has(dk);
     const miss=missingFor(listId,sec,sh).length;
-    const btn=(t,i,opt)=>{
-      const k=entryKey(sec,i,sh); const r=e[k];
-      const conf=S.confirmKey===listId+"|"+k;
-      const ex=r&&Array.isArray(r.extra)?r.extra:[]; const n=r?1+ex.length:0; const last=ex.length?ex[ex.length-1]:r;
-      const who=conf?"もう一度押すと取り消し":r?(n>1?n+"回（最後 "+h(last.by)+" "+fmtT(last.at)+"）":h(r.by)+" "+fmtT(r.at)):"";
-      return '<div class="item-wrap"><button class="item'+(r?" done":"")+(conf?" confirm":"")+(!r&&isLate&&!opt?" late":"")+'" data-act="toggle" data-list="'+listId+'" data-v="'+k+'" aria-pressed="'+(!!r)+'">'+
-        '<span class="box"></span><span class="t">'+h(t)+'</span><span class="who">'+who+'</span></button>'+
-        (r&&!conf?'<div class="again-row">'+(n>1?'<button type="button" class="again" data-act="againUndo" data-list="'+listId+'" data-v="'+k+'" aria-label="'+h(t)+' の回数を1回減らす">−1回</button>':'')+
-          '<button type="button" class="again" data-act="again" data-list="'+listId+'" data-v="'+k+'" aria-label="'+h(t)+' をもう1回やった">＋もう1回</button></div>':'')+'</div>';
+    const btn=it=>{
+      const k=ekey(it,sh); const r=e[k]; const conf=S.confirmKey===listId+"|"+k;
+      const ex=r&&Array.isArray(r.extra)?r.extra:[]; const n=manCount(r); const last=ex.length?ex[ex.length-1]:r;
+      const lastTxt=r?"最後 "+h(last.by)+" "+fmtT(last.at):"";
+      const ab=(a,lab,aria)=>'<button type="button" class="again" data-act="'+a+'" data-list="'+listId+'" data-v="'+k+'" aria-label="'+h(it.t)+' '+aria+'">'+lab+'</button>';
+      if(it.auto==="bath"){
+        const ac=autoBathCount(sh),tg=autoBathTarget(sh),tot=ac+n;
+        return '<div class="item-wrap"><div class="item auto'+(tg&&ac>=tg?" done":"")+'"><span class="box"></span><span class="t">'+h(it.t)+'<small class="autonote">浴槽点検で記録すると自動で増えます</small></span>'+
+          '<span class="who">'+tot+'回'+(tg?' / 予定 '+tg+'回':'')+(n?'<br>（臨時 '+n+'回）':'')+'</span></div>'+
+          '<div class="again-row">'+(n?ab("againUndo","−臨時1回","臨時の回数を1回減らす"):'')+ab("again","＋臨時で1回","臨時で1回やった")+'</div></div>';
+      }
+      const times=it.times||1, done=n>=times;
+      const who=conf?"もう一度押すと取り消し":times>1?n+" / "+times+"回"+(r?"<br>"+lastTxt:""):r?(n>1?n+"回（"+lastTxt+"）":h(r.by)+" "+fmtT(r.at)):"";
+      const row=(r&&!conf)?'<div class="again-row">'+((times>1?n>0&&!done:n>1)||(times>1&&done&&n>times)?ab("againUndo","−1回","の回数を1回減らす"):'')+(done?ab("again","＋もう1回","をもう1回やった"):'')+'</div>':'';
+      return '<div class="item-wrap"><button class="item'+(done?" done":n?" partial":"")+(conf?" confirm":"")+(!done&&isLate?" late":"")+'" data-act="toggle" data-list="'+listId+'" data-v="'+k+'" aria-pressed="'+done+'">'+
+        '<span class="box">'+(times>1&&!done?'<b class="num">'+n+'</b>':'')+'</span><span class="t">'+h(it.t)+(times>1?'<small class="autonote">'+times+'回やります。やるたびに押してください</small>':'')+(it.note?'<small class="autonote">'+h(it.note)+'</small>':'')+'</span><span class="who">'+who+'</span></button>'+row+'</div>';
     };
-    const items=sec.items.map((t,i)=>isOpt(sec,i)?"":btn(t,i,false)).join("");
-    const optIdx=sec.items.map((t,i)=>i).filter(i=>isOpt(sec,i));
-    const optDone=optIdx.filter(i=>e[entryKey(sec,i,sh)]).length;
-    const ok=S.optOpen&&S.optOpen[listId+sec.id+sh];
-    const optBox=optIdx.length?'<div class="optbox"><button type="button" class="opt-h" data-act="optToggle" data-v="'+listId+sec.id+sh+'" aria-expanded="'+(!!ok)+'"><span>'+(ok?"▼":"▶")+' 必要なときだけの作業（'+optIdx.length+'件'+(optDone?'・'+optDone+'件済み':'')+'）</span><span class="sub">'+(ok?"閉じる":"押すと開きます")+'</span></button>'+
-      (ok?'<div class="items">'+optIdx.map(i=>btn(sec.items[i],i,true)).join("")+'</div>':"")+'</div>':"";
-    const req=reqCount(sec);
+    const list=itemsFor(sec,sh);
+    const items=list.map(btn).join("");
+    const req=reqCount(sec,sh);
     const pct=req?Math.round((req-miss)/req*100):100;
     return '<section class="sec"><div class="sec-h"><h3>'+h(sec.name)+(sec.id==="op"&&sh==="昼"?"　昼の確認":"")+'</h3><span class="sub num">'+(req-miss)+' / '+req+'</span><div class="progress"><i style="width:'+pct+'%"></i></div>'+
       (due!=null?'<span class="due'+(isLate?" late":"")+'">期限 '+h(S.settings.due[dk])+(isLate?"（超過）":"")+'</span>':"")+'</div>'+
-      (sec.note||sec.shiftNotes?'<p class="sub" style="margin:0">'+h(sec.shiftNotes?sh+"："+sec.shiftNotes[sh]:sec.note)+'</p>':"")+(items?'<div class="items">'+items+'</div>':"")+optBox+'</section>';
+      (sec.note||sec.shiftNotes?'<p class="sub" style="margin:0">'+h(sec.shiftNotes?sh+"："+sec.shiftNotes[sh]:sec.note)+'</p>':"")+'<div class="items">'+items+'</div></section>';
   }).join("");
   return '<div class="row"><h2>'+L.name+'</h2><span class="sub">'+fmtDate(S.date)+'</span><span class="spacer"></span>'+seg+'</div>'+
     '<p class="howto">終わった作業を押すと緑になります。まちがえたときは、もう一度押すと取り消せます。右上で、いまのシフトを選んでください。</p>'+secs;
@@ -878,16 +898,17 @@ function checkTable(listId){
   let body="";
   for(const sec of L.sections){
     body+='<tr><th colspan="'+(L.shifts.length+1)+'" style="background:var(--accent-soft);color:var(--accent)">'+h(sec.name)+'</th></tr>';
-    sec.items.forEach((t,i)=>{
-      const opt=isOpt(sec,i);
-      body+='<tr><td class="item-name">'+h(t)+(opt?' <span class="pill mute">必要時</span>':'')+'</td>'+L.shifts.map(sh=>{
-        if(!sec.shifts.includes(sh)) return '<td class="c dim">　</td>';
-        const r=e[entryKey(sec,i,sh)];
-        if(r){const ex=Array.isArray(r.extra)?r.extra:[];return '<td class="c done">'+h(r.by)+' <span class="num">'+fmtT(r.at)+'</span>'+(ex.length?' <b class="num">×'+(ex.length+1)+'</b><div class="sub">'+ex.map(x=>h(x.by)+" "+fmtT(x.at)).join("、")+'</div>':'')+'</td>'}
-        if(opt) return '<td class="c dim">—</td>';
+    sec.items.forEach(it=>{
+      body+='<tr><td class="item-name">'+h(it.t)+(it.note?' <span class="sub">（'+h(it.note)+'）</span>':'')+(it.times>1?' <span class="pill mute">'+it.times+'回</span>':'')+(it.auto?' <span class="pill mute">浴槽点検と連動</span>':'')+'</td>'+L.shifts.map(sh=>{
+        if(!(it.shifts||sec.shifts).includes(sh)) return '<td class="c dim">　</td>';
+        const r=e[ekey(it,sh)]; const ex=r&&Array.isArray(r.extra)?r.extra:[]; const n=manCount(r);
+        if(it.auto==="bath"){const ac=isToday||true?autoBathCount(sh):0,tg=autoBathTarget(sh);return '<td class="c '+(tg&&ac>=tg?"done":"dim")+'">'+(ac+n)+'回'+(tg?' / '+tg:'')+(n?'<div class="sub">臨時 '+n+'</div>':'')+'</td>'}
+        const times=it.times||1;
+        if(n>=times) return '<td class="c done">'+h(r.by)+' <span class="num">'+fmtT(r.at)+'</span>'+(n>1?' <b class="num">×'+n+'</b><div class="sub">'+ex.map(x=>h(x.by)+" "+fmtT(x.at)).join("、")+'</div>':'')+'</td>';
         const dk=sec.dueKey?sec.dueKey+"_"+sh:listId==="duty"?"duty_"+sh:sec.id+"_"+sh;
         const past=!isToday||lateKeys.has(dk);
-        return '<td class="c '+(past&&(!isToday||lateKeys.has(dk))?"miss":"dim")+'">'+(past?"未":"—")+'</td>';
+        if(n) return '<td class="c '+(past?"miss":"dim")+'">'+n+' / '+times+'回</td>';
+        return '<td class="c '+(past?"miss":"dim")+'">'+(past?"未":"—")+'</td>';
       }).join("")+'</tr>';
     });
   }
@@ -934,8 +955,7 @@ function overlayView(){
       '<div class="grid4"><label class="fld"><span>清掃時間 開始</span><input class="f num" id="st_cf" name="cleanFrom" value="'+h(st.cleanFrom)+'"></label><label class="fld"><span>清掃時間 終了</span><input class="f num" id="st_ct" name="cleanTo" value="'+h(st.cleanTo)+'"></label></div>'+
       '<h3>作業の期限（24時以降は 25:00 のように入力）</h3><div class="grid4">'+DUE_LABELS.map(([k,n])=>'<label class="fld"><span>'+n+'</span><input class="f num" id="st_due_'+k+'" name="due_'+k+'" value="'+h(st.due[k])+'" placeholder="HH:MM"></label>').join("")+'</div>'+
       '<label class="check"><input type="checkbox" id="st_duty" name="dutyAlarm"'+(st.dutyAlarm?" checked":"")+'>業務チェック（外回り以外）の未完了も画面に表示する</label>'+
-      '<h3>チェック項目の分け方</h3><p class="sub" style="margin:0">チェックを入れた項目は「必要なときだけの作業」になり、折りたたまれます。やらなくても遅れの表示には入りません。</p>'+
-      Object.values(LISTS).map(L=>L.sections.map(sec=>'<div class="optset"><b>'+h(sec.name)+'</b>'+sec.items.map((t,i)=>'<label class="check"><input type="checkbox" id="st_opt_'+sec.id+pad(i)+'" name="opt_'+sec.id+pad(i)+'"'+(isOpt(sec,i)?" checked":"")+'>'+h(t)+'</label>').join("")+'</div>').join("")).join("")+
+
       '<label class="check"><input type="checkbox" id="st_tue" name="closedTue"'+(st.closedDays.includes(2)?" checked":"")+'>火曜は定休日（未実施の表示を止める）</label>'+
       '<label class="fld"><span>スタッフの名前（1行に1人）</span><textarea class="f" id="st_staff" name="staff" rows="4">'+h((st.staff||[]).join("\n"))+'</textarea></label>'+
       '<h3>メール通知</h3><p class="sub" style="margin:0">残留塩素が基準値以下で記入されると、すぐに下のアドレスへメールが届きます。アプリを開いていない人にも届きます。</p>'+
@@ -1011,13 +1031,9 @@ document.addEventListener("click",async ev=>{
     case "sameStaff": S.staffShift=v; lsSet("staffShift",v); render(); toast("担当："+S.staff+" さん",true); break;
     case "again": case "againUndo": {
       if(needStaff()) break;
-      const L=el.dataset.list, r=entries(L)[v]; if(!r) break;
-      const ex=Array.isArray(r.extra)?r.extra.slice():[];
-      if(act==="again") ex.push({by:S.staff,at:Date.now()}); else ex.pop();
-      try{await writeMerge(LISTS[L].doc+"/"+S.date,{entries:{[v]:{extra:ex}}});toast(act==="again"?(ex.length+1)+"回目を記録しました":"回数を "+(ex.length+1)+" 回にしました",true)}catch(err){saveErr(err)}
+      const L=el.dataset.list; await bump(L,v,act==="again"?1:-1);
       break;
     }
-    case "optToggle": S.optOpen=S.optOpen||{}; S.optOpen[v]=!S.optOpen[v]; render(); break;
     case "noteOpen": S.noteOpen=S.noteOpen||{}; S.noteOpen[v]=true; render(); setTimeout(()=>{const i=$("#in_"+v+"_note");if(i)i.focus()},50); break;
     case "clother": S.clOther=S.clOther||{}; S.clOther[v]=true; render(); setTimeout(()=>{const i=$("#in_"+v+"_cl");if(i)i.focus()},50); break;
     case "toggle": toggleItem(el.dataset.list,v); break;
@@ -1084,9 +1100,20 @@ function chooseStaff(n){
   S.staff=n;lsSet("staff",n);S.staffShift=defaultShift("duty");lsSet("staffShift",S.staffShift);S.recent=[n,...S.recent.filter(x=>x!==n)].slice(0,12);lsSet("recentStaff",JSON.stringify(S.recent));
   S.overlay=null;render();toast("担当："+n);
 }
+/* 回数を1つ増やす／減らす（0回になったら記録を消す） */
+async function bump(listId,key,d){
+  const r=entries(listId)[key]; const it=itemOf(key)||{}; let patch,n;
+  if(d>0){ if(!r){patch={by:S.staff,at:Date.now()};n=1} else {const ex=(Array.isArray(r.extra)?r.extra.slice():[]);ex.push({by:S.staff,at:Date.now()});patch={extra:ex};n=ex.length+1} }
+  else { if(!r) return; const ex=(Array.isArray(r.extra)?r.extra.slice():[]); if(ex.length){ex.pop();patch={extra:ex};n=ex.length+1} else {patch=null;n=0} }
+  try{await writeMerge(LISTS[listId].doc+"/"+S.date,{entries:{[key]:patch}});
+    const t=it.times||1; toast(it.auto?"臨時の計測を "+(n)+" 回にしました":t>1?n+" / "+t+" 回":d>0?n+"回目を記録しました":"回数を "+n+" 回にしました",true)}
+  catch(err){saveErr(err)}
+}
 async function toggleItem(listId,key){
   if(needStaff()) return;
   const e=entries(listId); const ck=listId+"|"+key;
+  const it=itemOf(key)||{}; const times=it.times||1;
+  if(times>1&&manCount(e[key])<times){await bump(listId,key,1);return}
   if(e[key]){
     if(S.confirmKey!==ck){S.confirmKey=ck;clearTimeout(confirmTimer);confirmTimer=setTimeout(()=>{S.confirmKey=null;render(true)},3000);render(true);return}
     S.confirmKey=null;
@@ -1131,8 +1158,7 @@ async function saveSettings(f){
   const th=+f.threshold.value; if(!isFinite(th)||th<=0){toast("塩素の基準値を正しく入力してください");return}
   if(parseHM(f.cleanFrom.value)==null||parseHM(f.cleanTo.value)==null){toast("清掃時間を HH:MM で入力してください");return}
   const newPin=f.newPin.value.trim();
-  const optional={};f.querySelectorAll('input[name^="opt_"]').forEach(x=>{if(x.checked)optional[x.name.slice(4)]=true});
-  const data={optional,cleanFrom:f.cleanFrom.value.trim(),cleanTo:f.cleanTo.value.trim(),threshold:th,grace:Math.max(0,+f.grace.value||0),due,dutyAlarm:f.dutyAlarm.checked,closedDays:f.closedTue.checked?[2]:[],
+  const data={cleanFrom:f.cleanFrom.value.trim(),cleanTo:f.cleanTo.value.trim(),threshold:th,grace:Math.max(0,+f.grace.value||0),due,dutyAlarm:f.dutyAlarm.checked,closedDays:f.closedTue.checked?[2]:[],
     staff:f.staff.value.split(/\n/).map(x=>x.trim()).filter(Boolean),emails:f.emails.value.split(/[\s,、]+/).filter(Boolean)};
   try{const d=await api("saveSettings",S.pin,data,newPin||null);if(newPin)S.pin=newPin;
     S.settings=Object.assign(clone(DEFAULTS),d,{due:Object.assign({},DEFAULTS.due,d.due||{})});S.overlay=null;render();toast("設定を保存しました")}
