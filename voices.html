@@ -111,7 +111,7 @@ const NOREPLY = "回答なし";
 const C = {id:0,date:1,hour:2,age:3,freq:4,sat:5,kind:6,voice:7,answer:8,check:9,status:10,fbAsked:11,fb:12,fixed:13,paper:14,action:15,staff:16,posted:17,net:18,memo:19};
 const STAGES = [
   {key:"check",  label:"回答を書いてOKする", who:"副店長・店長", pill:"todo", hot:true},
-  {key:"fb",     label:"相良さんの返事まち", who:"相良さん", pill:"wait"},
+  {key:"fb",     label:"相良さんのフィードバック", who:"相良さん", pill:"wait", hot:true},
   {key:"fix",    label:"回答を確定する", who:"副店長・店長", pill:"todo", hot:true},
   {key:"paper",  label:"返答用紙ができるのを待つ", who:"金曜の朝に自動", pill:"wait"},
   {key:"post",   label:"印刷してロビーに貼る", who:"副店長・店長", pill:"todo", hot:true},
@@ -213,10 +213,10 @@ function homeView(){
   const counts={};STAGES.forEach(s=>counts[s.key]=0);
   S.rows.forEach(r=>counts[stageOf(r)]++);
   const shown=S.rows.filter(r=>!S.filter||stageOf(r)===S.filter).slice().reverse();
-  const mine=counts.check+counts.fix+counts.post;
+  const mine=counts.check+counts.fb+counts.fix+counts.post;
   return (!S.name?'<div class="banner">はじめに、右上の「名前をえらぶ」で名字を入れてください。だれが回答したか記録に残り、返答用紙の名前にもなります。</div>':"")+
   '<div><h2>'+(mine?"いま、"+mine+"件やることがあります":"いま、やることはありません")+'</h2>'+
-  '<p class="lead">赤い数字が、副店長・店長の出番です。押すと、その分だけ下に出ます。</p></div>'+
+  '<p class="lead">赤い数字が出番です（相良さんは「相良さんのフィードバック」）。押すと、その分だけ下に出ます。</p></div>'+
   '<div class="stages">'+STAGES.map(s=>'<button class="stage'+(s.hot&&counts[s.key]?" hot":"")+'" data-filter="'+s.key+'" aria-pressed="'+(S.filter===s.key)+'">'+
     '<span class="n num">'+counts[s.key]+'</span><span>'+s.label+'</span>'+(s.who?'<span class="t">'+s.who+'</span>':"")+'</button>').join("")+'</div>'+
   '<div class="row" style="justify-content:space-between;align-items:center"><h2>'+(S.filter?h(stageInfo(S.filter).label):"ぜんぶの声")+'（'+shown.length+'件）</h2>'+
@@ -233,8 +233,12 @@ function detailView(r){
   const author=(v[C.memo].match(/回答：([^/]+)/)||[])[1];
   let next="";
   if(st==="check") next='<div class="next"><strong>あなたの出番：回答を書いてOKする</strong><span>上の欄に、お客様への回答を<b>自分の言葉で</b>書いてください。書けたら「この回答でOK」を押します。金曜の朝に相良さんへ確認のメールが自動で届きます。</span><button class="btn" data-act="ok"'+dis+'>この回答でOK</button></div>';
-  if(st==="fb") next='<div class="next"><strong>いまは相良さんの返事まち</strong><span>相良さんが表の「相良さんFB」に返事を書くと次に進みます。回答を直したいときは、上の欄を直して押しなおしてください。</span><button class="btn sub" data-act="ok"'+dis+'>直した回答でOK</button></div>';
-  if(st==="fix") next='<div class="next"><strong>あなたの出番：回答を確定する</strong><span>相良さんの返事を読んで、直すところがあれば直してから「回答を確定」を押します。金曜の朝に返答用紙が自動でできます。</span><div class="row"><button class="btn sub" data-act="ok"'+dis+'>回答だけ保存</button><button class="btn" data-act="fix"'+dis+'>回答を確定</button></div></div>';
+  if(st==="fb") next='<div class="next"><strong>相良さんの出番：回答を見てフィードバックする</strong>'+
+    '<span>回答を読んで、よければ「このままでOK」、直してほしいところがあれば下に書いて「直してほしい」を押してください。ひとこと添えるときも下の欄に書きます。</span>'+
+    '<textarea id="fbIn" aria-label="相良さんのフィードバック" placeholder="例：最後の一文をもう少しやわらかく"></textarea>'+
+    '<div class="row"><button class="btn sub" data-act="fbFix"'+dis+'>直してほしい</button><button class="btn" data-act="fbOk"'+dis+'>このままでOK</button></div></div>'+
+    '<div class="next"><strong>副店長の方へ</strong><span>相良さんの返事を待っています。返事の前でも、回答を直したいときは上の欄を直して押しなおせます。</span><button class="btn sub" data-act="ok"'+dis+'>直した回答でOK</button></div>';
+  if(st==="fix") next='<div class="next"><strong>あなたの出番：回答を確定する</strong><span>'+(/^【直して】/.test(v[C.fb])?'<b>相良さんから「直してほしい」と返事が来ています。</b>':'')+'相良さんの返事を読んで、直すところがあれば直してから「回答を確定」を押します。金曜の朝に返答用紙が自動でできます。</span><div class="row"><button class="btn sub" data-act="ok"'+dis+'>回答だけ保存</button><button class="btn" data-act="fix"'+dis+'>回答を確定</button></div></div>';
   if(st==="paper") next='<div class="next"><strong>返答用紙ができるのを待っています</strong><span>金曜の朝に自動でできます。急ぐときは、Claude の「鶴の湯お客様の声運用係」に「急いでやって」と送ってください。</span></div>';
   if(st==="post") next='<div class="next"><strong>あなたの出番：印刷してロビーに貼る</strong><span>「返答用紙をひらく」から印刷して、ロビーに貼ってください。貼りおわったら「貼った」を押します。</span><div class="row"><a class="btn sub" href="'+h(v[C.paper])+'" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">返答用紙をひらく</a><button class="btn" data-act="posted"'+dis+'>貼った</button></div></div>';
   if(st==="noreply") next='<div class="next"><strong>この声には回答しないことにしました</strong><span>表には記録として残ります。相良さんへの確認や返答用紙づくりはしません。</span><button class="btn sub" data-act="undoNoreply"'+dis+'>やっぱり回答する（もどす）</button></div>';
@@ -302,6 +306,13 @@ document.addEventListener("click",async ev=>{
     if(await write(r,{I:NOREPLY,K:"対応済み",T:memo},"回答しないことにしました。記録には残ります")){S.noReplyOpen=false;render()}
   }
   if(act==="undoNoreply") await write(r,{I:"",K:"対応中"},"もとにもどしました。回答を書いて「この回答でOK」を押してください");
+  if(act==="fbOk"||act==="fbFix"){
+    if(!S.name){S.overlay="name";render();return}
+    const note=($("#fbIn")||{value:""}).value.trim();
+    if(act==="fbFix"&&!note) return toast("どこを直してほしいか、下の欄に書いてください");
+    const fb=(act==="fbOk"?"【OK】":"【直して】")+(note?note:"")+"（"+S.name+"・"+today()+"）";
+    await write(r,{M:fb},act==="fbOk"?"OKを送りました。副店長が回答を確定します":"直してほしいことを送りました。副店長が回答を直します");
+  }
   if(act==="posted") await write(r,{K:"対応済み",R:today()},"おつかれさまでした。貼った日を記録しました");
 });
 document.addEventListener("input",ev=>{

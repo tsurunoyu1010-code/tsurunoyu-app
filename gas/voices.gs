@@ -8,7 +8,7 @@ const SHEET_ID = "1xGDbByDd8rAxMMos62PPOQTZ3l35htkFWXOyo7FAen8";
 const TAB = "アンケート管理";
 const FIRST_ROW = 4;                 // 3行目が見出し、4行目からデータ
 const CHECK_API = "https://script.google.com/macros/s/AKfycbws0RsBbITD2Q6XXUiWxgpfoCdMVl8W0wxr4VgR3grVOHaBWOEpiTAmH5mwmDTD2Pe7/exec";
-const WRITABLE = ["I", "J", "K", "N", "R", "T"]; // 回答・副店長確認・対応状況・回答確定・ロビー掲示日・備考
+const WRITABLE = ["I", "J", "K", "M", "N", "R", "T"]; // 回答・副店長確認・対応状況・相良さんFB・回答確定・ロビー掲示日・備考
 
 function doPost(e) {
   let out;
