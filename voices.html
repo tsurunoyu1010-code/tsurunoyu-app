@@ -42,6 +42,7 @@ header.top .wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding
 .brand{font-family:var(--f-display);font-size:20px;letter-spacing:.06em;white-space:nowrap}
 .brand small{font-family:var(--f-body);font-weight:500;font-size:12px;opacity:.8;margin-left:8px;letter-spacing:.1em}
 .hdr-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-left:auto}
+select.hbtn option{color:#15212b;background:#fff}
 .hbtn{border:1px solid color-mix(in srgb,var(--accent-ink) 40%,transparent);background:transparent;color:var(--accent-ink);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:500;white-space:nowrap;text-decoration:none}
 .hbtn.staff{font-weight:700}
 main{padding-block:16px 40px;display:grid;gap:16px}
@@ -92,7 +93,11 @@ a{color:var(--accent)}
   <div class="brand">鶴の湯<small>お客様の声</small></div>
   <div class="hdr-meta">
     <button class="hbtn staff" id="whoBtn" type="button">名前をえらぶ</button>
-    <a class="hbtn" href="./?mode=manager">業務記録へ</a>
+    <select class="hbtn" aria-label="画面をえらぶ" onchange="if(this.value!=='voices')location.href='./?mode='+this.value">
+      <option value="front">画面：フロント入力</option>
+      <option value="manager">画面：店長・副店長 確認</option>
+      <option value="voices" selected>画面：お客様の声</option>
+    </select>
   </div>
 </div></header>
 <main class="wrap" id="view"><div class="banner">読み込み中…</div></main>

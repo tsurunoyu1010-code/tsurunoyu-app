@@ -46,6 +46,7 @@ header.top .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding
 .brand small{font-family:var(--f-body);font-weight:500;font-size:12px;opacity:.8;margin-left:8px;letter-spacing:.1em}
 .hdr-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-left:auto}
 .clock{font-size:14px;opacity:.92}
+select.hbtn option{color:#15212b;background:#fff}
 .hbtn{border:1px solid color-mix(in srgb,var(--accent-ink) 40%,transparent);background:transparent;color:var(--accent-ink);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:500;white-space:nowrap}
 .hbtn.on{background:var(--accent-ink);color:var(--accent)}
 .hbtn.staff{font-weight:700}
@@ -614,9 +615,13 @@ function hdr(){
     '<span class="clock num">'+(S.date?fmtDate(S.date)+"　":"")+now.getHours()+":"+pad(now.getMinutes())+'</span>'+
     '<button class="hbtn staff" data-act="pickStaff">'+(S.mode==="front"?"担当：":"確認者：")+h(S.staff||"未選択")+(S.mode==="front"?"（交代）":"")+'</button>'+
     (S.mode==="front"?
-      '<button class="hbtn'+(S.soundOn?" on":"")+'" data-act="sound">'+(S.soundOn?"音：ON":"音を出す")+'</button>':"")+
+      '<button class="hbtn'+(S.soundOn?" on":"")+'" data-act="sound" aria-pressed="'+S.soundOn+'">'+(S.soundOn?"音：ON":"音：OFF")+'</button>':"")+
     (S.mode==="front"?'<button class="hbtn" data-act="help">使い方</button><button class="hbtn" data-act="more" aria-label="その他">その他</button>':
-      '<a class="hbtn" href="voices.html" style="text-decoration:none">お客様の声</a><button class="hbtn" data-act="settings">設定</button><button class="hbtn" data-act="switch">フロント入力へ</button>');
+      '<button class="hbtn" data-act="settings">設定</button>')+
+    '<select class="hbtn" aria-label="画面をえらぶ" onchange="if(this.value===\'voices\')location.href=\'voices.html\';else location.href=\'./?mode=\'+this.value">'+
+      '<option value="front"'+(S.mode==="front"?" selected":"")+'>画面：フロント入力</option>'+
+      '<option value="manager"'+(S.mode==="manager"?" selected":"")+'>画面：店長・副店長 確認</option>'+
+      '<option value="voices">画面：お客様の声</option></select>';
   return '<header class="top" id="hdr"><div class="wrap"><div class="brand">鶴の湯<small>'+(S.mode==="front"?"フロント入力":S.mode==="manager"?"店長・副店長 確認":"業務記録")+'</small></div><div class="hdr-meta">'+right+'</div></div></header>';
 }
 function startView(){
@@ -993,7 +998,7 @@ document.addEventListener("click",async ev=>{
       setTimeout(()=>{(target||document.body).scrollIntoView({behavior:"smooth",block:"start"})},60);
       break;
     }
-    case "sound": enableSound(); break;
+    case "sound": if(S.soundOn){S.soundOn=false;render()}else enableSound(); break;
     case "pickStaff": S.overlay="staff"; render(); break;
     case "help": S.overlay="help"; render(); break;
     case "more": S.overlay="more"; render(); break;
