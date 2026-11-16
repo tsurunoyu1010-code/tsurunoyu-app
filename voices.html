@@ -71,6 +71,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:18px;margin:0;letter-s
 .pill{font-size:12px;font-weight:700;border-radius:999px;padding:1px 10px;border:1.5px solid currentColor;white-space:nowrap}
 .pill.todo{color:var(--bad)} .pill.wait{color:var(--warn)} .pill.done{color:var(--muted)}
 .stars{color:var(--warn);letter-spacing:1px}
+.who{font-weight:700;color:var(--ink);background:var(--accent-soft);border-radius:999px;padding:1px 10px}
 dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}
 dt{color:var(--muted)} dd{margin:0;min-width:0}
 .label{font-size:13px;color:var(--muted);margin-bottom:4px;font-weight:500}
@@ -227,7 +228,7 @@ function homeView(){
   '<div class="row" style="justify-content:space-between;align-items:center"><h2>'+(S.filter?h(stageInfo(S.filter).label):"ぜんぶの声")+'（'+shown.length+'件）</h2>'+
   '<div class="row">'+(S.filter?'<button class="link" data-filter="">ぜんぶ見る</button>':"")+'<button class="link" data-act="reload">読みこみなおす</button></div></div>'+
   '<div class="list">'+(shown.map(r=>{const s=stageInfo(stageOf(r));return '<button class="item" data-open="'+h(r.v[C.id])+'">'+
-    '<span class="top"><span class="id">'+h(r.v[C.id])+'</span><span>'+h(r.v[C.date])+'</span><span class="stars">'+stars(r.v[C.sat])+'</span><span>'+h(r.v[C.kind])+'</span><span class="pill '+s.pill+'">'+s.label+'</span></span>'+
+    '<span class="top"><span class="id">'+h(r.v[C.id])+'</span><span>'+h(r.v[C.date])+'</span><span class="stars">'+stars(r.v[C.sat])+'</span><span>'+h(r.v[C.kind])+'</span><span class="pill '+s.pill+'">'+s.label+'</span>'+((r.v[C.memo].match(/回答：([^/]+)/)||[])[1]?'<span class="who">回答：'+h(r.v[C.memo].match(/回答：([^/]+)/)[1].trim())+'</span>':'')+'</span>'+
     '<p>'+h(r.v[C.voice])+'</p></button>'}).join("")||'<p class="lead">ここに入る声はありません。</p>')+'</div>';
 }
 
