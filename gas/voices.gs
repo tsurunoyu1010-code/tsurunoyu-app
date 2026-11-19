@@ -8,13 +8,14 @@ const SHEET_ID = "1xGDbByDd8rAxMMos62PPOQTZ3l35htkFWXOyo7FAen8";
 const TAB = "アンケート管理";
 const FIRST_ROW = 4;                 // 3行目が見出し、4行目からデータ
 const CHECK_API = "https://script.google.com/macros/s/AKfycbws0RsBbITD2Q6XXUiWxgpfoCdMVl8W0wxr4VgR3grVOHaBWOEpiTAmH5mwmDTD2Pe7/exec";
-const WRITABLE = ["I", "J", "K", "M", "N", "R", "T"]; // 回答・副店長確認・対応状況・相良さんFB・回答確定・ロビー掲示日・備考
+const WRITABLE = ["I", "J", "K", "M", "N", "Q", "R", "T"]; // 回答・副店長確認・対応状況・相良さんFB・回答確定・スタッフ共有・ロビー掲示日・備考
+const APP_URL = "https://tsurunoyu1010-code.github.io/tsurunoyu-app/voices.html";
 
 function doPost(e) {
   let out;
   try {
     const req = JSON.parse(e.postData.contents);
-    const fn = { list: list_, write: write_, ping: ping_ }[req.fn];
+    const fn = { list: list_, write: write_, ping: ping_, notify: notify_ }[req.fn];
     if (!fn) throw new Error("unknown fn");
     out = { ok: true, result: fn.apply(null, req.args || []) };
   } catch (err) {
@@ -72,4 +73,25 @@ function write_(pin, row, id, updates) {
   } finally {
     lock.releaseLock();
   }
+}
+
+/* 「今すぐ対応」を社員にメールで知らせる。送り先はチェック表アプリの設定（塩素管理の通知先）と同じ */
+function notify_(pin, id, voice, memo, who) {
+  checkPin_(pin);
+  const res = UrlFetchApp.fetch(CHECK_API, {
+    method: "post", contentType: "text/plain;charset=utf-8", muteHttpExceptions: true, followRedirects: true,
+    payload: JSON.stringify({ fn: "getDocs", args: [["config/settings"]] })
+  });
+  const j = JSON.parse(res.getContentText());
+  const st = (j.ok && j.result && j.result["config/settings"]) || {};
+  const to = (st.emails || []).filter(String);
+  if (!to.length) throw new Error("no emails");
+  MailApp.sendEmail({
+    to: to.join(","),
+    subject: "【鶴の湯】今すぐ対応が必要なお客様の声（" + id + "）",
+    body: "スタッフのみなさんへ\n\n" + (who || "") + " さんが「今すぐ対応が必要」にしました。\n\n" +
+      "【管理ID】" + id + "\n【お客様の声】\n" + voice + "\n\n【メモ】\n" + (memo || "（なし）") + "\n\n" +
+      "対応したら、アプリでこの声をひらいて「対応した」を押し、やったことを書いてください。\n" + APP_URL + "\n"
+  });
+  return to.length;
 }

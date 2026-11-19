@@ -124,6 +124,11 @@ const STAGES = [
   {key:"done",   label:"貼りおわった", who:"", pill:"done"},
   {key:"noreply",label:"回答しない声", who:"記録として残すだけ", pill:"done"}
 ];
+/* 社員で共有（Q列）。1行に1件「日付 名前【種類】内容」。いまの状態は最後の行の種類で決まる */
+const SHARE=[{key:"urgent",tag:"今すぐ対応",label:"今すぐ対応",hot:true},{key:"meeting",tag:"会議で話す",label:"会議で話す",hot:true},{key:"closed",tag:"",label:"対応ずみ（共有）"}];
+function shareLog(r){return String(r.v[C.staff]||"").split("\n").filter(Boolean)}
+function shareOf(r){const l=shareLog(r);if(!l.length)return "";const m=l[l.length-1].match(/【(.+?)】/);const t=m?m[1]:"";
+  return t==="今すぐ対応"?"urgent":t==="会議で話す"?"meeting":"closed"}
 function stageOf(r){
   if(r.v[C.answer]===NOREPLY) return "noreply";
   if(r.v[C.posted]) return "done";
@@ -218,17 +223,21 @@ function nameView(){
 function homeView(){
   const counts={};STAGES.forEach(s=>counts[s.key]=0);
   S.rows.forEach(r=>counts[stageOf(r)]++);
-  const shown=S.rows.filter(r=>!S.filter||stageOf(r)===S.filter).slice().reverse();
+  const sc={urgent:0,meeting:0,closed:0};S.rows.forEach(r=>{const k=shareOf(r);if(k)sc[k]++});
+  const shown=S.rows.filter(r=>!S.filter||(S.filter.startsWith("q:")?shareOf(r)===S.filter.slice(2):stageOf(r)===S.filter)).slice().reverse();
+  const flabel=S.filter?(S.filter.startsWith("q:")?SHARE.find(x=>"q:"+x.key===S.filter).label:stageInfo(S.filter).label):"ぜんぶの声";
   const mine=counts.check+counts.fb+counts.fix+counts.post;
   return (!S.name?'<div class="banner">はじめに、右上の「名前をえらぶ」で名字を入れてください。だれが回答したか記録に残り、返答用紙の名前にもなります。</div>':"")+
   '<div><h2>'+(mine?"いま、"+mine+"件やることがあります":"いま、やることはありません")+'</h2>'+
   '<p class="lead">赤い数字が出番です（相良さんは「相良さんのフィードバック」）。押すと、その分だけ下に出ます。</p></div>'+
   '<div class="stages">'+STAGES.map(s=>'<button class="stage'+(s.hot&&counts[s.key]?" hot":"")+'" data-filter="'+s.key+'" aria-pressed="'+(S.filter===s.key)+'">'+
     '<span class="n num">'+counts[s.key]+'</span><span>'+s.label+'</span>'+(s.who?'<span class="t">'+s.who+'</span>':"")+'</button>').join("")+'</div>'+
-  '<div class="row" style="justify-content:space-between;align-items:center"><h2>'+(S.filter?h(stageInfo(S.filter).label):"ぜんぶの声")+'（'+shown.length+'件）</h2>'+
+  '<div><h2>社員で共有</h2><p class="lead">副店長が「今すぐ対応」「会議で話す」に入れた声です。</p></div>'+
+  '<div class="stages">'+SHARE.map(x=>'<button class="stage'+(x.hot&&sc[x.key]?" hot":"")+'" data-filter="q:'+x.key+'" aria-pressed="'+(S.filter==="q:"+x.key)+'"><span class="n num">'+sc[x.key]+'</span><span>'+x.label+'</span></button>').join("")+'</div>'+
+  '<div class="row" style="justify-content:space-between;align-items:center"><h2>'+h(flabel)+'（'+shown.length+'件）</h2>'+
   '<div class="row">'+(S.filter?'<button class="link" data-filter="">ぜんぶ見る</button>':"")+'<button class="link" data-act="reload">読みこみなおす</button></div></div>'+
   '<div class="list">'+(shown.map(r=>{const s=stageInfo(stageOf(r));return '<button class="item" data-open="'+h(r.v[C.id])+'">'+
-    '<span class="top"><span class="id">'+h(r.v[C.id])+'</span><span>'+h(r.v[C.date])+'</span><span class="stars">'+stars(r.v[C.sat])+'</span><span>'+h(r.v[C.kind])+'</span><span class="pill '+s.pill+'">'+s.label+'</span>'+((r.v[C.memo].match(/回答：([^/]+)/)||[])[1]?'<span class="who">回答：'+h(r.v[C.memo].match(/回答：([^/]+)/)[1].trim())+'</span>':'')+'</span>'+
+    '<span class="top"><span class="id">'+h(r.v[C.id])+'</span><span>'+h(r.v[C.date])+'</span><span class="stars">'+stars(r.v[C.sat])+'</span><span>'+h(r.v[C.kind])+'</span><span class="pill '+s.pill+'">'+s.label+'</span>'+((r.v[C.memo].match(/回答：([^/]+)/)||[])[1]?'<span class="who">回答：'+h(r.v[C.memo].match(/回答：([^/]+)/)[1].trim())+'</span>':'')+(shareOf(r)==="urgent"?'<span class="pill todo">今すぐ対応</span>':shareOf(r)==="meeting"?'<span class="pill wait">会議で話す</span>':'')+'</span>'+
     '<p>'+h(r.v[C.voice])+'</p></button>'}).join("")||'<p class="lead">ここに入る声はありません。</p>')+'</div>';
 }
 
@@ -267,8 +276,18 @@ function detailView(r){
     :'<div class="box">'+h(v[C.answer])+'</div>')+'</div>'+
   (v[C.fb]?'<div><div class="label">相良さんの返事</div><div class="box">'+h(v[C.fb])+'</div></div>':"")+
   (v[C.action]&&v[C.action]!=="なし"?'<div><div class="label">お店でやること（改善アクション）</div><div class="box">'+h(v[C.action])+'</div></div>':"")+
-  next+
+  next+shareView(r)+
   '<p class="lead">手書きのスキャンは <a href="'+SCAN_FOLDER+'" target="_blank" rel="noopener">スキャンのフォルダ</a>（ファイル名が管理ID）。表をそのまま見るときは <a href="'+SHEET_URL+'" target="_blank" rel="noopener">管理表</a>。</p></div>';
+}
+function shareView(r){
+  const st=shareOf(r),log=shareLog(r),dis=S.saving?" disabled":"";
+  let btns;
+  if(st==="urgent") btns='<span class="lead">対応したら、やったことを書いて「対応した」を押してください。</span><div class="row"><button class="btn" data-act="qDone" data-v="対応した"'+dis+'>対応した</button></div>';
+  else if(st==="meeting") btns='<span class="lead">会議で話したら、決まったことを書いて「話した」を押してください。</span><div class="row"><button class="btn" data-act="qDone" data-v="話した"'+dis+'>話した</button></div>';
+  else btns='<span class="lead">必要なら、メモを書いてどちらかを押してください。「今すぐ対応」は社員にメールが届きます。</span><div class="row"><button class="btn" data-act="qAdd" data-v="今すぐ対応"'+dis+'>今すぐ対応が必要</button><button class="btn sub" data-act="qAdd" data-v="会議で話す"'+dis+'>会議で話す</button></div>';
+  return '<div class="next"><strong>社員で共有</strong>'+
+    (log.length?'<div class="box">'+log.map(h).join("\n")+'</div>':'')+
+    '<textarea id="qIn" aria-label="メモ・やったこと" placeholder="'+(st==="urgent"?"例：すきまテープを貼った":st==="meeting"?"例：アヒルの数を半分にする":"例：女湯の扉のすきま風。今日中に見る")+'" style="min-height:4em"></textarea>'+btns+'</div>';
 }
 function countText(n){return n+"字 ／ 目安"+ANSWER_MAX+"字まで"+(n>ANSWER_MAX?"（長いと返答用紙からはみ出します）":"")}
 
@@ -318,6 +337,19 @@ document.addEventListener("click",async ev=>{
     if(act==="fbFix"&&!note) return toast("どこを直してほしいか、下の欄に書いてください");
     const fb=(act==="fbOk"?"【OK】":"【直して】")+(note?note:"")+"（"+S.name+"・"+today()+"）";
     await write(r,{M:fb},act==="fbOk"?"OKを送りました。副店長が回答を確定します":"直してほしいことを送りました。副店長が回答を直します");
+  }
+  if(act==="qAdd"||act==="qDone"){
+    if(!S.name){S.overlay="name";render();return}
+    const note=($("#qIn")||{value:""}).value.trim();
+    if(act==="qDone"&&!note) return toast("やったこと・決まったことを書いてください");
+    const kind=t.dataset.v;
+    const line=today()+" "+S.name+"【"+kind+"】"+(note||"");
+    const q=(r.v[C.staff]?r.v[C.staff]+"\n":"")+line;
+    if(!(await write(r,{Q:q},kind==="今すぐ対応"?"今すぐ対応に入れました":kind==="会議で話す"?"会議で話すに入れました":"記録しました"))) return;
+    if(kind==="今すぐ対応"){
+      try{const n=await api("notify",S.pin,r.v[C.id],r.v[C.voice],note,S.name);toast("社員 "+n+" 人にメールを送りました")}
+      catch(e){toast(e.message==="no emails"?"送り先のメールアドレスがありません（業務記録の設定で入れてください）":"メールを送れませんでした。記録は残っています")}
+    }
   }
   if(act==="posted") await write(r,{K:"対応済み",R:today()},"おつかれさまでした。貼った日を記録しました");
 });
